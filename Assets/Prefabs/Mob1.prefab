@@ -15,7 +15,7 @@ GameObject:
   - 114: {fileID: 11426774}
   - 114: {fileID: 11484074}
   m_Layer: 0
-  m_Name: Mob
+  m_Name: Mob1
   m_TagString: Mob
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -102,8 +102,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c78fc48e70440e24c87f19487af1667b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mobMinSpeed: .5
-  mobMaxSpeed: 2
+  speed: 1
 --- !u!114 &11484074
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -115,7 +114,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8dc17aa92d06ddd49bc15ce681bec0fc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxHP: 100
+  maxHP: 50
   curHP: 100
   MaxDamageColor: {r: 1, g: 0, b: 0, a: 1}
   MinDamageColor: {r: 0, g: 0, b: 1, a: 1}

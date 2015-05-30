@@ -10,6 +10,9 @@ public class Globals : Singleton<Globals>
     public List<GameObject> PlacementList = new List<GameObject>();
 
     public float totalTime = 3 * 60;
+    [HideInInspector]
+    public float finishX;
+
     private float goalTime;
 
     public string timeToWin
@@ -32,5 +35,12 @@ public class Globals : Singleton<Globals>
     {
         totalTime = Mathf.Max(totalTime, 60);
         goalTime = totalTime;
+
+        var f = GameObject.Find("Finish");
+        if (f == null)
+            Debug.LogError("Place Finish object to game scene.");
+        else
+            finishX = f.transform.position.x;
     }
+
 }

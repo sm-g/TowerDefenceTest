@@ -6,7 +6,7 @@ public class SpawnerAI : MonoBehaviour
     public int mobsPerWave = 3;
     public int waveNumber = 0;
     public float waveCooldown = 10;
-    public Transform Mob;
+    public Transform[] mobPrefabs;
     public GameObject mobsFolder;
 
     public float waveDelayTimer;
@@ -17,6 +17,11 @@ public class SpawnerAI : MonoBehaviour
         spawnPoints = GameObject.FindGameObjectsWithTag("Respawn");
         waveDelayTimer = 0;
         waveCooldown = Mathf.Max(waveCooldown, 10);
+
+        if (mobPrefabs.Length == 0)
+        {
+            Debug.LogError("Add mob prefabs to " + typeof(SpawnerAI));
+        }
     }
 
     private void Update()
@@ -38,7 +43,8 @@ public class SpawnerAI : MonoBehaviour
                     var pos = spawnPoint.transform.position;
                     for (int i = 0; i < mobsPerWave; i++)
                     {
-                        var mob = Instantiate(Mob, new Vector3(pos.x + i * 2,
+                        var prefab = mobPrefabs[Random.Range(0, mobPrefabs.Length)];
+                        var mob = Instantiate(prefab, new Vector3(pos.x + i * 2,
                               pos.y,
                               pos.z), Quaternion.identity) as GameObject;
                         // mob.transform.parent = mobsFolder.transform;
