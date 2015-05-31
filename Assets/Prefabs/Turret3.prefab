@@ -12,7 +12,7 @@ GameObject:
   - 23: {fileID: 2389046}
   - 114: {fileID: 11414652}
   m_Layer: 0
-  m_Name: Turret
+  m_Name: Turret3
   m_TagString: Turret
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -72,10 +72,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a522980838479db4a8421f1c5efc9f30, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  attackMaxDistance: 50
-  attackMinDistance: 5
-  attackDamage: 10
-  reloadTimer: 2.5
+  attackMaxDistance: 6
+  attackMinDistance: .100000001
+  attackDamage: 20
+  shotsAtOnce: 1
+  reloadTimer: 4
 --- !u!1001 &100100000
 Prefab:
   m_ObjectHideFlags: 1
