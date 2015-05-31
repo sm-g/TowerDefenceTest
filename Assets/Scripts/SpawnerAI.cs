@@ -66,7 +66,8 @@ public class SpawnerAI : MonoBehaviour
             var pos = new Vector3(spawnPos.x + i * 2, spawnPos.y, spawnPos.z);
 
             var mob = Instantiate(prefab, pos, Quaternion.identity) as GameObject;
-            mob.transform.parent = mobsFolder.transform;
+            mobsFolder.AddChild(mob);
+
         }
         Debug.LogFormat("spawn {0} mobs", mobsPerWave);
     }

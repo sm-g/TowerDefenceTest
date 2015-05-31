@@ -76,7 +76,7 @@ public class TurretAI : MonoBehaviour
     private void Shoot(GameObject curTarget)
     {
         var proj = Instantiate(projectilePrefab, turret.position, projectilePrefab.transform.rotation) as GameObject;
-        proj.transform.parent = projectilesFolder.transform;
+        projectilesFolder.AddChild(proj);
 
         var ai = proj.GetComponent<ProjectileAI>();
         if (ai != null)

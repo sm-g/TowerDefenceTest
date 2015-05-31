@@ -20,4 +20,9 @@ public static class GameObjectExtensions
         var distance = Vector3.Distance(target.position, source.transform.position);
         return minDistance < distance && distance < maxDistance;
     }
+
+    public static void AddChild(this GameObject parent, GameObject child)
+    {
+        child.transform.parent = parent.transform;
+    }
 }

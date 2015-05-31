@@ -4,11 +4,11 @@ using UnityEngine;
 
 public class TurretPlacer : Singleton<TurretPlacer>
 {
-    public Transform[] turretPrefabs;
+    public GameObject[] turretPrefabs;
 
-    private List<TurretAI> _turrets = new List<TurretAI>();
+    private Dictionary<TurretAI, GameObject> _turrets = new Dictionary<TurretAI, GameObject>();
 
-    public IEnumerable<TurretAI> Turrets { get { return _turrets; } }
+    public Dictionary<TurretAI, GameObject> Turrets { get { return _turrets; } }
 
     private void Awake()
     {
@@ -19,9 +19,9 @@ public class TurretPlacer : Singleton<TurretPlacer>
         {
             var ai = prefab.GetComponent<TurretAI>();
             if (ai == null)
-                Debug.LogError("No " + typeof(TurretAI) + " in prefab");
+                Debug.LogError("No " + typeof(TurretAI) + " in prefab.");
             else
-                _turrets.Add(ai);
+                _turrets.Add(ai, prefab);
         }
     }
 }
