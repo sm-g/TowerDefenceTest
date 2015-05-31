@@ -9,7 +9,7 @@ public class MobHP : MonoBehaviour
 
     private void Awake()
     {
-        Globals.instance.MobList.Add(gameObject);
+        Globals.instance.Register(gameObject);
         maxHP = Mathf.Max(maxHP, 1);
         curHP = Mathf.Min(curHP, maxHP);
     }
@@ -31,6 +31,6 @@ public class MobHP : MonoBehaviour
 
     private void OnDestroy()
     {
-        Globals.instance.MobList.Remove(gameObject);
+        Globals.instance.Unregister(gameObject);
     }
 }

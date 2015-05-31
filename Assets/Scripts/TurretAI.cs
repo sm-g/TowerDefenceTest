@@ -13,6 +13,11 @@ public class TurretAI : MonoBehaviour
     private GameObject curTarget;
     private Transform turret;
 
+    private void Awake()
+    {
+        Globals.instance.Register(gameObject);
+    }
+
     private void Start()
     {
         turret = transform;

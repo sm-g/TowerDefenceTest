@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-public class Graphics : MonoBehaviour
+public class Graphics : Singleton<Graphics>
 {
     public Rect buildMenu;
     public Rect firstTurret;
@@ -12,6 +12,8 @@ public class Graphics : MonoBehaviour
     public Rect gameStatsPassed;
 
     private const float margin = 10;
+
+    public bool showTurretMenu { get; set; }
 
     private void Awake()
     {
@@ -28,21 +30,20 @@ public class Graphics : MonoBehaviour
         gameStatsPassed = new Rect(gameStats.x + margin, gameStats.y + 50, 125, 25);
     }
 
-    private void Update()
-    {
-    }
-
     private void OnGUI()
     {
-        GUI.Box(buildMenu, "Select Turret to build");
-        if (GUI.Button(firstTurret, "1 Turret"))
+        if (showTurretMenu)
         {
-        }
-        if (GUI.Button(secondTurret, "2 Turret"))
-        {
-        }
-        if (GUI.Button(thirdTurret, "3 Turret"))
-        {
+            GUI.Box(buildMenu, "Select Turret to build");
+            if (GUI.Button(firstTurret, "1 Turret"))
+            {
+            }
+            if (GUI.Button(secondTurret, "2 Turret"))
+            {
+            }
+            if (GUI.Button(thirdTurret, "3 Turret"))
+            {
+            }
         }
 
         GUI.Box(gameStats, "Stats");

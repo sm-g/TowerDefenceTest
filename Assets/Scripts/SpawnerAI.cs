@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using UnityEngine;
+using System.Linq;
 
 public class SpawnerAI : MonoBehaviour
 {
@@ -27,7 +28,7 @@ public class SpawnerAI : MonoBehaviour
     private void Update()
     {
         // новая волна - когда убиты все мобы или пришло время
-        if (Globals.instance.MobList.Count == 0)
+        if (Globals.instance.Mobs.Count() == 0)
             waveDelayTimer = 0;
 
         if (waveDelayTimer <= 0)
