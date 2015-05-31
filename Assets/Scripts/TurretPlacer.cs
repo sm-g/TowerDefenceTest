@@ -13,7 +13,7 @@ public class TurretPlacer : Singleton<TurretPlacer>
     private void Awake()
     {
         if (turretPrefabs.Length == 0)
-            Debug.LogError("Add turret prefabs to " + typeof(SpawnerAI));
+            Debug.LogError("Add turret prefabs to " + typeof(TurretPlacer));
 
         foreach (var prefab in turretPrefabs)
         {

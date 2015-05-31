@@ -6,14 +6,16 @@ public class SpawnerAI : MonoBehaviour
 {
     [Range(1, 500)]
     public int mobsPerWave = 3;
+
     [Range(10, 500)]
     public float waveCooldown = 10;
-    public Transform[] mobPrefabs;
-    public GameObject mobsFolder;
+
+    public GameObject[] mobPrefabs;
 
     private float waveDelayTimer = 0;
     private int waveNumber = 0;
     private GameObject[] spawnPoints;
+    private GameObject mobsFolder;
 
     private void Awake()
     {
@@ -21,6 +23,10 @@ public class SpawnerAI : MonoBehaviour
 
         if (mobPrefabs.Length == 0)
             Debug.LogError("Add mob prefabs to " + typeof(SpawnerAI));
+        if (spawnPoints.Length == 0)
+            Debug.LogWarning("No spawn points on scene.");
+
+        mobsFolder = new GameObject("Mobs");
     }
 
     private void Update()
@@ -34,22 +40,9 @@ public class SpawnerAI : MonoBehaviour
             Debug.LogFormat("wave {0}", waveNumber);
 
             waveDelayTimer = waveCooldown;
-
-            if (spawnPoints != null)
+            foreach (var spawnPoint in spawnPoints)
             {
-                foreach (var spawnPoint in spawnPoints)
-                {
-                    var pos = spawnPoint.transform.position;
-                    for (int i = 0; i < mobsPerWave; i++)
-                    {
-                        var prefab = mobPrefabs[Random.Range(0, mobPrefabs.Length)];
-                        var mob = Instantiate(prefab, new Vector3(pos.x + i * 2,
-                              pos.y,
-                              pos.z), Quaternion.identity) as GameObject;
-                        // mob.transform.parent = mobsFolder.transform;
-                    }
-                    Debug.LogFormat("create {0} mobs", mobsPerWave);
-                }
+                SpawnMobs(spawnPoint);
             }
 
             waveNumber++;
@@ -59,6 +52,23 @@ public class SpawnerAI : MonoBehaviour
             }
             StartCoroutine(WaitNextWave(waveCooldown));
         }
+    }
+
+    /// <summary>
+    /// Создает ряд случайных мобов.
+    /// </summary>
+    private void SpawnMobs(GameObject spawnPoint)
+    {
+        var spawnPos = spawnPoint.transform.position;
+        for (int i = 0; i < mobsPerWave; i++)
+        {
+            var prefab = mobPrefabs[Random.Range(0, mobPrefabs.Length)];
+            var pos = new Vector3(spawnPos.x + i * 2, spawnPos.y, spawnPos.z);
+
+            var mob = Instantiate(prefab, pos, Quaternion.identity) as GameObject;
+            mob.transform.parent = mobsFolder.transform;
+        }
+        Debug.LogFormat("spawn {0} mobs", mobsPerWave);
     }
 
     private IEnumerator WaitNextWave(float cooldown)

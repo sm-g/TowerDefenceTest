@@ -17,11 +17,12 @@ public class TurretAI : MonoBehaviour
     [Range(0.1f, 50f)]
     public float reloadTimer = 2.5f;
 
-    public Transform projectilePrefab;
+    public GameObject projectilePrefab;
 
     private float reloadCooldown;
     private GameObject curTarget;
     private Transform turret;
+    private GameObject projectilesFolder;
 
     private void Awake()
     {
@@ -29,9 +30,15 @@ public class TurretAI : MonoBehaviour
 
         if (projectilePrefab == null)
             Debug.LogError("Add projectile prefab to " + typeof(TurretAI));
+        if (projectilePrefab != null && projectilePrefab.GetComponent<ProjectileAI>() == null)
+            Debug.LogErrorFormat("Add {0} to projectile prefab", typeof(ProjectileAI));
 
         if (attackMaxDistance < attackMinDistance)
             Debug.LogWarning("Attack max distance less than min distance.");
+
+        projectilesFolder = GameObject.Find("Projectiles");
+        if (projectilesFolder == null)
+            projectilesFolder = new GameObject("Projectiles");
 
         reloadCooldown = reloadTimer;
     }
@@ -41,40 +48,40 @@ public class TurretAI : MonoBehaviour
         turret = transform;
     }
 
-
     private void Update()
     {
-        if (curTarget != null && curTarget.activeInHierarchy)
+        if (curTarget != null && curTarget.activeInHierarchy &&
+            curTarget.InRadialArea(turret, attackMinDistance, attackMaxDistance))
         {
-            // если цель в допустимых пределах
-            if (curTarget.InRadialArea(turret, attackMinDistance, attackMaxDistance))
+            // есть цель в допустимых пределах
+            reloadTimer -= Time.deltaTime;
+
+            if (reloadTimer <= 0)
             {
-                reloadTimer -= Time.deltaTime;
-
                 // и пора стрелять
-                if (reloadTimer <= 0)
-                {
-                    reloadTimer = reloadCooldown;
+                reloadTimer = reloadCooldown;
 
-                    // выпускаем снаряды
-                    for (int i = 0; i < shotsAtOnce; i++)
-                        Shoot(curTarget);
-                }
-                return;
+                // выпускаем снаряды
+                for (int i = 0; i < shotsAtOnce; i++)
+                    Shoot(curTarget);
             }
-
-            // выбираем новую цель
         }
-
-        curTarget = GetNearestTarget();
+        else
+        {
+            // выбираем новую цель
+            curTarget = GetNearestTarget();
+        }
     }
 
     private void Shoot(GameObject curTarget)
     {
-        var proj = Instantiate(projectilePrefab, turret.position, projectilePrefab.rotation) as Transform;
+        var proj = Instantiate(projectilePrefab, turret.position, projectilePrefab.transform.rotation) as GameObject;
+        proj.transform.parent = projectilesFolder.transform;
+
         var ai = proj.GetComponent<ProjectileAI>();
         if (ai != null)
         {
+            // прицеливаем снаряд
             ai.target = curTarget;
             ai.damage = attackDamage;
         }
@@ -82,13 +89,15 @@ public class TurretAI : MonoBehaviour
             GameObject.Destroy(proj);
     }
 
+    /// <summary>
+    /// Возвращает ближайшего моба в области атаки.
+    /// </summary>
     public GameObject GetNearestTarget()
     {
         float closestMobDistance = float.MaxValue;
         GameObject nearestmob = null;
-        var mobs = GameObject.FindGameObjectsWithTag("Mob").ToList();
 
-        foreach (var target in mobs)
+        foreach (var target in Globals.instance.Mobs)
         {
             if (target.InRadialArea(turret, attackMinDistance, closestMobDistance))
             {
@@ -99,5 +108,4 @@ public class TurretAI : MonoBehaviour
 
         return closestMobDistance > attackMaxDistance ? null : nearestmob;
     }
-
 }
