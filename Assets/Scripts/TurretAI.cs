@@ -4,18 +4,28 @@ using UnityEngine;
 
 public class TurretAI : MonoBehaviour
 {
+    [Range(0, 500)]
     public float attackMaxDistance = 50.0f;
-    public float attackMinDistance = 5.0f;
+    [Range(0, 5)]
+    public float attackMinDistance = 0.1f;
     public float attackDamage = 10.0f;
+    [Range(0, 5)]
+    public int shotsAtOnce = 1;
+    [Range(0.1f, 50f)]
     public float reloadTimer = 2.5f;
-    public const float reloadCooldown = 2.5f;
 
+    float reloadCooldown;
     private GameObject curTarget;
     private Transform turret;
 
     private void Awake()
     {
         Globals.instance.Register(gameObject);
+
+        if (attackMaxDistance < attackMinDistance)
+            Debug.LogWarning("Attack max distance less than min distance.");
+
+        reloadCooldown = reloadTimer;
     }
 
     private void Start()

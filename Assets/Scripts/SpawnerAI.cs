@@ -1,28 +1,26 @@
 ﻿using System.Collections;
-using UnityEngine;
 using System.Linq;
+using UnityEngine;
 
 public class SpawnerAI : MonoBehaviour
 {
+    [Range(1, 500)]
     public int mobsPerWave = 3;
-    public int waveNumber = 0;
+    [Range(10, 500)]
     public float waveCooldown = 10;
     public Transform[] mobPrefabs;
     public GameObject mobsFolder;
 
-    public float waveDelayTimer;
+    private float waveDelayTimer = 0;
+    private int waveNumber = 0;
     private GameObject[] spawnPoints;
 
     private void Awake()
     {
         spawnPoints = GameObject.FindGameObjectsWithTag("Respawn");
-        waveDelayTimer = 0;
-        waveCooldown = Mathf.Max(waveCooldown, 10);
 
         if (mobPrefabs.Length == 0)
-        {
             Debug.LogError("Add mob prefabs to " + typeof(SpawnerAI));
-        }
     }
 
     private void Update()

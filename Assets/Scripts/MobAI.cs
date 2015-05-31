@@ -2,6 +2,7 @@
 
 public class MobAI : MonoBehaviour
 {
+    [Range(0, 5)]
     public float speed = 1f;
 
     private Transform mob;

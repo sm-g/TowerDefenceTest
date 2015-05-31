@@ -4,6 +4,7 @@ using System.Linq;
 
 public class Globals : Singleton<Globals>
 {
+    [Range(60, 10 * 60)]
     public float totalTime = 3 * 60;
     [HideInInspector]
     public float finishX;
@@ -82,7 +83,6 @@ public class Globals : Singleton<Globals>
 
     public void Awake()
     {
-        totalTime = Mathf.Max(totalTime, 60);
         goalTime = totalTime;
 
         var f = GameObject.Find("Finish");

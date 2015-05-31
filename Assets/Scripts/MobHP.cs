@@ -2,7 +2,9 @@
 
 public class MobHP : MonoBehaviour
 {
+    [Range(0, 500)]
     public float maxHP = 30;
+    [Range(0, 500)]
     public float curHP = 30;
     public Color MaxDamageColor = Color.red;
     public Color MinDamageColor = Color.blue;
@@ -10,8 +12,7 @@ public class MobHP : MonoBehaviour
     private void Awake()
     {
         Globals.instance.Register(gameObject);
-        maxHP = Mathf.Max(maxHP, 1);
-        curHP = Mathf.Min(curHP, maxHP);
+        curHP = Mathf.Min(curHP, maxHP); // curHP <= maxHP
     }
 
     public void ChangeHP(float adjust)
