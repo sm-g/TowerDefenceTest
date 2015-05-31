@@ -23,6 +23,7 @@ public class MobHP : MonoBehaviour
 
     private void Update()
     {
+        // цвет моба - f(hp)
         gameObject.GetComponent<Renderer>().material.color = Color.Lerp(MaxDamageColor, MinDamageColor, curHP / maxHP);
         if (curHP <= 0)
         {

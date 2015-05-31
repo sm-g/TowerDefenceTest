@@ -15,11 +15,6 @@ public class MobAI : MonoBehaviour
     private void Update()
     {
         mob.Translate(Vector3.left * speed * Time.deltaTime);
-        if (mob.position.x < Globals.instance.finishX)
-        {
-            gameObject.GetComponent<MobHP>().curHP = 0;
-            Globals.instance.passedMobs++;
-        }
     }
 
 }
