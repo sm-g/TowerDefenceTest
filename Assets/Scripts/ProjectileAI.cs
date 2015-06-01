@@ -34,11 +34,6 @@ public class ProjectileAI : MonoBehaviour
 
     private void FollowTarget()
     {
-        projectile.rotation = Quaternion.Slerp(
-            projectile.rotation,
-            Quaternion.LookRotation(target.transform.position - projectile.position),
-            1000);
-
         var step = speed * Time.deltaTime;
         projectile.position = Vector3.MoveTowards(transform.position, target.transform.position, step);
     }

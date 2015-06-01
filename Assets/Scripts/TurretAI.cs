@@ -68,7 +68,7 @@ public class TurretAI : MonoBehaviour
 
     private void Shoot(GameObject target)
     {
-        var lookAtTarget = Quaternion.LookRotation(target.transform.position - turret.position, new Vector3(0, 90, 0));
+        var lookAtTarget = Quaternion.LookRotation(target.transform.position - turret.position);
         var proj = Instantiate(Globals.instance.projectilePrefab, turret.position, lookAtTarget) as GameObject;
         projectilesFolder.AddChild(proj);
 
