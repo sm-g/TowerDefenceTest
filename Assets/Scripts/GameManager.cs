@@ -71,7 +71,6 @@ public class GameManager
         var placement = go.GetComponent<Placement>();
         if (placement != null)
         {
-            placement.SelectedChanged += placement_SelectedChanged;
             _placements.Add(placement);
         }
 
@@ -93,7 +92,6 @@ public class GameManager
         var placement = go.GetComponent<Placement>();
         if (placement != null)
         {
-            placement.SelectedChanged -= placement_SelectedChanged;
             _placements.Remove(placement);
         }
 
@@ -127,19 +125,5 @@ public class GameManager
             h(this, e);
         }
     }
-    private void placement_SelectedChanged(object sender, System.EventArgs e)
-    {
-        var p = sender as Placement;
-        if (p.IsSelected)
-        {
-            Placements.Except(p).ForAll(x => x.IsSelected = false);
 
-            Graphics.instance.showTurretMenu = true;
-        }
-
-        if (Placements.All(x => !x.IsSelected))
-        {
-            Graphics.instance.showTurretMenu = false;
-        }
-    }
 }

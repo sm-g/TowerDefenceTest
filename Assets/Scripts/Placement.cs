@@ -17,7 +17,7 @@ public class Placement : MonoBehaviour
     private bool _isSelected;
     private GameObject turretsFolder;
 
-    public event EventHandler SelectedChanged;
+    public static event EventHandler<EventArgs<Placement>> SelectedChanged;
 
     /// <summary>
     /// Башня на этом месте.
@@ -25,7 +25,7 @@ public class Placement : MonoBehaviour
     public GameObject Turret { get; private set; }
 
     /// <summary>
-    /// Место выбрано.
+    /// Место выбрано. Одновременно выбрано только одно место на сцене.
     /// </summary>
     public bool IsSelected
     {
@@ -35,7 +35,7 @@ public class Placement : MonoBehaviour
             _isSelected = value;
             gameObject.GetComponent<Renderer>().material.color = _isSelected ? selectedColor : color;
 
-            OnSelectedChanged(EventArgs.Empty);
+            OnSelectedChanged();
         }
     }
     /// <summary>
@@ -52,12 +52,12 @@ public class Placement : MonoBehaviour
         turretsFolder.AddChild(Turret);
     }
 
-    protected virtual void OnSelectedChanged(EventArgs e)
+    protected virtual void OnSelectedChanged()
     {
         var h = SelectedChanged;
         if (h != null)
         {
-            h(this, e);
+            h(this, new EventArgs<Placement>(this));
         }
     }
 
@@ -69,6 +69,13 @@ public class Placement : MonoBehaviour
         turretsFolder = GameObject.Find("Turrets");
         if (turretsFolder == null)
             turretsFolder = new GameObject("Turrets");
+
+        SelectedChanged += (s, e) =>
+        {
+            // only one selected
+            if (e.arg != this && e.arg.IsSelected)
+                IsSelected = false;
+        };
     }
 
     private void OnMouseDown()

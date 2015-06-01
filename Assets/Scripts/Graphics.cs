@@ -1,5 +1,6 @@
-﻿using UnityEngine;
-using System.Linq;
+﻿using System.Linq;
+using UnityEngine;
+
 public class Graphics : SingletonMB<Graphics>
 {
     public Rect buildMenu;
@@ -10,9 +11,9 @@ public class Graphics : SingletonMB<Graphics>
     public Rect gameStatsPassed;
 
     private const float margin = 10;
-    const float btnW = 100;
+    private const float btnW = 100;
 
-    public bool showTurretMenu { get; set; }
+    private Placement mayBeSelectedPlace;
 
     public string TimeToWin
     {
@@ -38,15 +39,21 @@ public class Graphics : SingletonMB<Graphics>
         gameStats = new Rect(margin, margin, 200, 100);
         gameStatsTime = new Rect(gameStats.x + margin, gameStats.y + 30, 125, 25);
         gameStatsPassed = new Rect(gameStats.x + margin, gameStats.y + 50, 125, 25);
+
+        Placement.SelectedChanged += (s, e) =>
+        {
+            if (e.arg.IsSelected)
+                mayBeSelectedPlace = s as Placement;
+        };
     }
 
     private void OnGUI()
     {
-        if (showTurretMenu)
+        var selectedPlace = GameManager.Instance.Placements.FirstOrDefault(x => x.IsSelected);
+        if (selectedPlace != null)
         {
             GUI.Box(buildMenu, "Select Turret to build");
 
-            var selectedPlace = GameManager.Instance.Placements.FirstOrDefault(x => x.IsSelected);
             var btnRect = turretBtn;
             foreach (TurretAI ai in Globals.instance.Turrets.Keys)
             {
