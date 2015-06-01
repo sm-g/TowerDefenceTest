@@ -48,7 +48,7 @@ public class Graphics : SingletonMB<Graphics>
 
             var selectedPlace = GameManager.Instance.Placements.FirstOrDefault(x => x.isSelected);
             var btnRect = turretBtn;
-            foreach (TurretAI ai in TurretPlacer.instance.Turrets.Keys)
+            foreach (TurretAI ai in Globals.instance.Turrets.Keys)
             {
                 if (GUI.Button(btnRect, "{0}*{1}/{2} hp/s, {3} m".FormatStr(
                     ai.attackDamage,

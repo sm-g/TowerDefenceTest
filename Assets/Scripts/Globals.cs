@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
@@ -13,10 +14,11 @@ public class Globals : SingletonMB<Globals>
     public GameObject[] mobPrefabs;
     public GameObject[] turretPrefabs;
     public GameObject projectilePrefab;
-
     internal float finishX;
     internal float goalTime;
+    private Dictionary<TurretAI, GameObject> _turrets = new Dictionary<TurretAI, GameObject>();
 
+    public Dictionary<TurretAI, GameObject> Turrets { get { return _turrets; } }
     public void Awake()
     {
         goalTime = totalTime;
@@ -36,6 +38,15 @@ public class Globals : SingletonMB<Globals>
             Debug.LogError("Place Finish object to game scene.");
         else
             finishX = f.transform.position.x;
+
+        foreach (var prefab in turretPrefabs)
+        {
+            var ai = prefab.GetComponent<TurretAI>();
+            if (ai == null)
+                Debug.LogError("No " + typeof(TurretAI) + " in prefab.");
+            else
+                _turrets.Add(ai, prefab);
+        }
     }
 
     public void Start()
@@ -56,9 +67,7 @@ public class Globals : SingletonMB<Globals>
 
     private IEnumerator WaitRound()
     {
-
         yield return new WaitForSeconds(Globals.instance.goalTime - Time.time);
-
     }
 
     private void OnLose()

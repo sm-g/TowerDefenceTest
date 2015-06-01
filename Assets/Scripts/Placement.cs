@@ -31,7 +31,7 @@ public class Placement : MonoBehaviour
         if (Turret != null)
             GameObject.Destroy(Turret);
 
-        Turret = Instantiate(TurretPlacer.instance.Turrets[ai], transform.position + transform.up, Quaternion.identity) as GameObject;
+        Turret = Instantiate(Globals.instance.Turrets[ai], transform.position + transform.up, Quaternion.identity) as GameObject;
 
         turretsFolder.AddChild(Turret);
     }
