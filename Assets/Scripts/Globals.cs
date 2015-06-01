@@ -33,9 +33,9 @@ public class Globals : SingletonMB<Globals>
         if (projectilePrefab != null && projectilePrefab.GetComponent<ProjectileAI>() == null)
             Debug.LogErrorFormat("Add {0} to projectile prefab", typeof(ProjectileAI));
 
-        var f = GameObject.Find("Finish");
+        var f = GameObject.FindGameObjectWithTag("Finish");
         if (f == null)
-            Debug.LogError("Place Finish object to game scene.");
+            Debug.LogError("Add tag 'Finish' to finish line.");
         else
             finishX = f.transform.position.x;
 

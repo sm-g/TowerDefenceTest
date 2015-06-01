@@ -24,7 +24,7 @@ public class FlyCamera : MonoBehaviour
     private void Awake()
     {
         Debug.Log("FlyCamera Awake() - RESETTING CAMERA POSITION");
-        transform.position = new Vector3(55, 8, 45);
+        transform.position = new Vector3(10, 8, 10);
         transform.rotation = Quaternion.Euler(45, 45, 0);
     }
 
