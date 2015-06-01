@@ -43,11 +43,12 @@ public class TurretAI : MonoBehaviour
 
     private void Update()
     {
+        reloadTimer -= Time.deltaTime;
+
         if (curTarget != null && curTarget.activeInHierarchy &&
             curTarget.InRadialArea(turret, attackMinDistance, attackMaxDistance))
         {
             // есть цель в допустимых пределах
-            reloadTimer -= Time.deltaTime;
 
             if (reloadTimer <= 0)
             {
