@@ -26,7 +26,7 @@ public class TurretAI : MonoBehaviour
 
     private void Awake()
     {
-        Globals.instance.Register(gameObject);
+        GameManager.Instance.Register(gameObject);
 
         if (projectilePrefab == null)
             Debug.LogError("Add projectile prefab to " + typeof(TurretAI));
@@ -97,7 +97,7 @@ public class TurretAI : MonoBehaviour
         float closestMobDistance = float.MaxValue;
         GameObject nearestmob = null;
 
-        foreach (var target in Globals.instance.Mobs)
+        foreach (var target in GameManager.Instance.Mobs)
         {
             if (target.InRadialArea(turret, attackMinDistance, closestMobDistance))
             {

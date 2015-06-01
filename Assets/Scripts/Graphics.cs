@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 using System.Linq;
-public class Graphics : Singleton<Graphics>
+public class Graphics : SingletonMB<Graphics>
 {
     public Rect buildMenu;
     public Rect turretBtn;
@@ -13,6 +13,20 @@ public class Graphics : Singleton<Graphics>
     const float btnW = 100;
 
     public bool showTurretMenu { get; set; }
+
+    public string TimeToWin
+    {
+        get
+        {
+            var guiTime = GameManager.Instance.SecondsToWin;
+
+            int minutes = guiTime / 60;
+            int seconds = guiTime % 60;
+
+            var text = string.Format("{0:00}:{1:00}", minutes, seconds);
+            return text;
+        }
+    }
 
     private void Awake()
     {
@@ -32,7 +46,7 @@ public class Graphics : Singleton<Graphics>
         {
             GUI.Box(buildMenu, "Select Turret to build");
 
-            var selectedPlace = Globals.instance.Placements.FirstOrDefault(x => x.isSelected);
+            var selectedPlace = GameManager.Instance.Placements.FirstOrDefault(x => x.isSelected);
             var btnRect = turretBtn;
             foreach (TurretAI ai in TurretPlacer.instance.Turrets.Keys)
             {
@@ -49,7 +63,7 @@ public class Graphics : Singleton<Graphics>
         }
 
         GUI.Box(gameStats, "Stats");
-        GUI.Label(gameStatsTime, "Time to win: " + Globals.instance.timeToWin);
-        GUI.Label(gameStatsPassed, "Passed mobs: " + Globals.instance.passedMobs);
+        GUI.Label(gameStatsTime, "Time to win: " + TimeToWin);
+        GUI.Label(gameStatsPassed, "Passed mobs: " + GameManager.Instance.PassedMobs);
     }
 }

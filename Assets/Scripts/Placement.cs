@@ -47,7 +47,7 @@ public class Placement : MonoBehaviour
 
     private void Awake()
     {
-        Globals.instance.Register(gameObject);
+        GameManager.Instance.Register(gameObject);
 
         isSelected = false;
         turretsFolder = GameObject.Find("Turrets");
@@ -62,6 +62,6 @@ public class Placement : MonoBehaviour
 
     private void OnDestroy()
     {
-        Globals.instance.Unregister(gameObject);
+        GameManager.Instance.Unregister(gameObject);
     }
 }

@@ -2,7 +2,7 @@
 using System.Linq;
 using UnityEngine;
 
-public class TurretPlacer : Singleton<TurretPlacer>
+public class TurretPlacer : SingletonMB<TurretPlacer>
 {
     public GameObject[] turretPrefabs;
 

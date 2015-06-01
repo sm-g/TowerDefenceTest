@@ -2,7 +2,7 @@
 using System.Linq;
 using UnityEngine;
 
-public class Singleton<T> : MonoBehaviour where T : MonoBehaviour
+public class SingletonMB<T> : MonoBehaviour where T : MonoBehaviour
 {
     protected static T _instance;
 
