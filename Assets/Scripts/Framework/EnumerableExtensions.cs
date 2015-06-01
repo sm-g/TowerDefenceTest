@@ -8,7 +8,9 @@ public static class EnumerableExtensions
     {
         return !x.Except(y).Any();
     }
-
+    /// <summary>
+    /// Выполняет действие над коллекцией.
+    /// </summary>
     public static void ForAll<T>(this IEnumerable<T> collection, Action<T> action)
     {
         foreach (var item in collection)
@@ -16,7 +18,9 @@ public static class EnumerableExtensions
             action(item);
         }
     }
-
+    /// <summary>
+    /// Выполняет действие над коллекцией как списком.
+    /// </summary>
     public static void ForEach<T>(this IEnumerable<T> collection, Action<T> action)
     {
         foreach (var item in collection.ToList())

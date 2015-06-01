@@ -46,7 +46,7 @@ public class Graphics : SingletonMB<Graphics>
         {
             GUI.Box(buildMenu, "Select Turret to build");
 
-            var selectedPlace = GameManager.Instance.Placements.FirstOrDefault(x => x.isSelected);
+            var selectedPlace = GameManager.Instance.Placements.FirstOrDefault(x => x.IsSelected);
             var btnRect = turretBtn;
             foreach (TurretAI ai in Globals.instance.Turrets.Keys)
             {

@@ -2,19 +2,32 @@
 using System.Linq;
 using UnityEngine;
 
+/// <summary>
+/// Место для строительства башни.
+/// </summary>
 public class Placement : MonoBehaviour
 {
     public Color color = Color.gray;
-    public Color selectedColor = Color.yellow;
-    private bool _isSelected;
 
+    /// <summary>
+    /// Цвет места, которое выбрано для строительства.
+    /// </summary>
+    public Color selectedColor = Color.yellow;
+
+    private bool _isSelected;
     private GameObject turretsFolder;
 
     public event EventHandler SelectedChanged;
 
+    /// <summary>
+    /// Башня на этом месте.
+    /// </summary>
     public GameObject Turret { get; private set; }
 
-    public bool isSelected
+    /// <summary>
+    /// Место выбрано.
+    /// </summary>
+    public bool IsSelected
     {
         get { return _isSelected; }
         set
@@ -25,7 +38,10 @@ public class Placement : MonoBehaviour
             OnSelectedChanged(EventArgs.Empty);
         }
     }
-
+    /// <summary>
+    /// Ставит новую башню.
+    /// </summary>
+    /// <param name="ai"></param>
     public void SetTurret(TurretAI ai)
     {
         if (Turret != null)
@@ -49,7 +65,7 @@ public class Placement : MonoBehaviour
     {
         GameManager.Instance.Register(gameObject);
 
-        isSelected = false;
+        IsSelected = false;
         turretsFolder = GameObject.Find("Turrets");
         if (turretsFolder == null)
             turretsFolder = new GameObject("Turrets");
@@ -57,7 +73,7 @@ public class Placement : MonoBehaviour
 
     private void OnMouseDown()
     {
-        isSelected = !isSelected;
+        IsSelected = !IsSelected;
     }
 
     private void OnDestroy()

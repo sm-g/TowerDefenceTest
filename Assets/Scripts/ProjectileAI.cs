@@ -5,12 +5,28 @@ public class ProjectileAI : MonoBehaviour
 {
     private float attackDistance = 0.1f;
     private float speed = 10;
-
+    TurretAI turret;
     private Transform projectile;
 
-    public float damage { get; set; }
+    public float Damage { get; private set; }
 
-    public GameObject target { get; set; }
+    /// <summary>
+    /// Цель снаряда. Снаряд без цели уничтожается.
+    /// </summary>
+    public GameObject Target { get; private set; }
+
+    /// <summary>
+    /// Прицеливает снаряд.
+    /// </summary>
+    /// <param name="target">Цель снаряда.</param>
+    /// <param name="turret">Башня, выпустившая снаряд.</param>
+    /// <param name="damage">Урон</param>
+    public void Initialize(GameObject target, TurretAI turret, float damage)
+    {
+        this.turret = turret;
+        Target = target;
+        Damage = damage;
+    }
 
     private void Start()
     {
@@ -19,15 +35,16 @@ public class ProjectileAI : MonoBehaviour
 
     private void Update()
     {
-        if (target != null && target.activeInHierarchy)
+        if (Target != null && Target.activeInHierarchy)
         {
-            if (target.InRadialArea(projectile, 0, attackDistance))
+            if (Target.InRadialArea(projectile, 0, attackDistance))
                 AttackTarget();
             else
                 FollowTarget();
         }
         else
         {
+            // снаряд без цели
             Destroy(gameObject);
         }
     }
@@ -35,16 +52,19 @@ public class ProjectileAI : MonoBehaviour
     private void FollowTarget()
     {
         var step = speed * Time.deltaTime;
-        projectile.position = Vector3.MoveTowards(transform.position, target.transform.position, step);
+        projectile.position = Vector3.MoveTowards(transform.position, Target.transform.position, step);
     }
 
     private void AttackTarget()
     {
-        MobHP mhp = target.GetComponent<MobHP>();
+        MobHP mhp = Target.GetComponent<MobHP>();
         if (mhp != null)
-            mhp.ChangeHP(-damage);
+        {
+            mhp.ChangeHP(-Damage);
+            turret.AddHitPoints(mhp.maxHP);
+        }
 
         // атака только на одну цель
-        target = null;
+        Target = null;
     }
 }

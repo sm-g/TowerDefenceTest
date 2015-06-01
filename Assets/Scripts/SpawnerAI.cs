@@ -4,54 +4,50 @@ using UnityEngine;
 
 public class SpawnerAI : MonoBehaviour
 {
-    [Range(1, 500)]
-    public int mobsPerWave = 3;
-
-    [Range(10, 500)]
-    public float waveCooldown = 10;
-
+    private static GameObject mobsFolder;
     private float waveDelayTimer = 0;
     private int waveNumber = 0;
     private GameObject[] spawnPoints;
-    private GameObject mobsFolder;
+    private float waveCooldown;
+    private int mobsPerWave;
 
-    private void Awake()
+    public void Initialize(float waveCooldown, int mobsPerWave, GameObject[] spawnPoints)
     {
-        spawnPoints = GameObject.FindGameObjectsWithTag("Respawn");
+        this.waveCooldown = waveCooldown;
+        this.mobsPerWave = mobsPerWave;
+        this.spawnPoints = spawnPoints;
 
-        if (spawnPoints.Length == 0)
-            Debug.LogWarning("No spawn points on scene.");
-
-        mobsFolder = new GameObject("Mobs");
+        mobsFolder = mobsFolder ?? new GameObject("Mobs");
     }
 
     private void Update()
     {
-        // новая волна - когда убиты все мобы или пришло время
         if (GameManager.Instance.Mobs.Count() == 0)
             waveDelayTimer = 0;
 
         if (waveDelayTimer <= 0)
         {
-            Debug.LogFormat("wave {0}", waveNumber);
-
-            waveDelayTimer = waveCooldown;
-            foreach (var spawnPoint in spawnPoints)
-            {
-                SpawnMobs(spawnPoint);
-            }
-
-            waveNumber++;
-            if (waveNumber >= 50)
-            {
-                mobsPerWave = 10;
-            }
+            // убиты все мобы или пришло время
+            MakeNewWave();
             StartCoroutine(WaitNextWave(waveCooldown));
         }
     }
 
+    private void MakeNewWave()
+    {
+        Debug.LogFormat("wave {0}", waveNumber);
+
+        waveDelayTimer = waveCooldown;
+        foreach (var spawnPoint in spawnPoints)
+        {
+            SpawnMobs(spawnPoint);
+        }
+
+        waveNumber++;
+    }
+
     /// <summary>
-    /// Создает ряд случайных мобов.
+    /// Создает ряд случайных мобов через 1 клетку в точке респауна.
     /// </summary>
     private void SpawnMobs(GameObject spawnPoint)
     {
@@ -61,10 +57,10 @@ public class SpawnerAI : MonoBehaviour
             var prefab = Globals.instance.mobPrefabs[Random.Range(0, Globals.instance.mobPrefabs.Length)];
             var pos = new Vector3(spawnPos.x + i * 2, spawnPos.y, spawnPos.z);
 
-            var mob = Instantiate(prefab, pos, Quaternion.identity) as GameObject;
+            var mob = GameObject.Instantiate(prefab, pos, Quaternion.identity) as GameObject;
             mobsFolder.AddChild(mob);
         }
-        Debug.LogFormat("spawn {0} mobs", mobsPerWave);
+        Debug.LogFormat("spawned {0} mobs", mobsPerWave);
     }
 
     private IEnumerator WaitNextWave(float cooldown)

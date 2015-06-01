@@ -2,12 +2,12 @@
 
 public class MobHP : MonoBehaviour
 {
-    [Range(0, 500)]
+    [Range(0, 100)]
     public float maxHP = 30;
-    [Range(0, 500)]
+    [Range(0, 100)]
     public float curHP = 30;
-    public Color MaxDamageColor = Color.red;
-    public Color MinDamageColor = Color.blue;
+    public Color maxDamageColor = Color.red;
+    public Color minDamageColor = Color.blue;
 
     private void Awake()
     {
@@ -23,8 +23,8 @@ public class MobHP : MonoBehaviour
 
     private void Update()
     {
-        // цвет моба - f(hp)
-        gameObject.GetComponent<Renderer>().material.color = Color.Lerp(MaxDamageColor, MinDamageColor, curHP / maxHP);
+        // цвет моба зависит от hp
+        gameObject.GetComponent<Renderer>().material.color = Color.Lerp(maxDamageColor, minDamageColor, curHP / maxHP);
         if (curHP <= 0)
         {
             Destroy(gameObject);

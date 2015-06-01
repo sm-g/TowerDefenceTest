@@ -18,6 +18,7 @@ public class TurretAI : MonoBehaviour
     public float reloadTimer = 2.5f;
 
     private float reloadCooldown;
+    private float hitPoints;
     private GameObject curTarget;
     private Transform turret;
     private GameObject projectilesFolder;
@@ -66,19 +67,20 @@ public class TurretAI : MonoBehaviour
             curTarget = GetNearestTarget();
         }
     }
-
+    /// <summary>
+    /// Выпускает снаряд по цели.
+    /// </summary>
     private void Shoot(GameObject target)
     {
         var lookAtTarget = Quaternion.LookRotation(target.transform.position - turret.position);
         var proj = Instantiate(Globals.instance.projectilePrefab, turret.position, lookAtTarget) as GameObject;
         projectilesFolder.AddChild(proj);
 
+        // прицеливаем снаряд
         var ai = proj.GetComponent<ProjectileAI>();
         if (ai != null)
         {
-            // прицеливаем снаряд
-            ai.target = target;
-            ai.damage = attackDamage;
+            ai.Initialize(target, this, attackDamage);
         }
     }
 
@@ -100,5 +102,11 @@ public class TurretAI : MonoBehaviour
         }
 
         return closestMobDistance > attackMaxDistance ? null : nearestmob;
+    }
+
+    public void AddHitPoints(float p)
+    {
+        if (p > 0)
+            hitPoints += p;
     }
 }

@@ -8,13 +8,10 @@ public class GameManager
     private static GameManager _instance;
 
     private List<GameObject> _mobs = new List<GameObject>();
-
     private List<GameObject> _turrets = new List<GameObject>();
-
     private List<Placement> _placements = new List<Placement>();
 
     public event EventHandler Won;
-
     public event EventHandler Lost;
 
     public static GameManager Instance
@@ -32,6 +29,8 @@ public class GameManager
     public int SecondsToWin { get { return (int)(Globals.instance.goalTime - Time.time); } }
 
     public int PassedMobs { get; private set; }
+    public int Lives { get { return Globals.instance.livesAtStart - PassedMobs; } }
+
 
     public IEnumerable<GameObject> Mobs { get { return _mobs; } }
 
@@ -41,19 +40,24 @@ public class GameManager
 
     public void CheckPassedMobs()
     {
-        Mobs.Where(mob => mob.transform.position.x < Globals.instance.finishX)
+        Mobs.Where(mob => IsFinished(mob))
             .ForEach(mob =>
             {
                 var hp = mob.GetComponent<MobHP>();
                 if (hp.curHP > 0)
                     PassedMobs++;
-                hp.curHP = 0;
+                hp.curHP = 0; // kill?
             });
 
-        if (PassedMobs >= Globals.instance.mobsPassedToLose)
+        if (Lives == 0)
         {
             OnLost(EventArgs.Empty);
         }
+    }
+
+    private static bool IsFinished(GameObject mob)
+    {
+        return mob.transform.position.x < Globals.instance.finishX;
     }
 
     public void CheckRound()
@@ -126,14 +130,14 @@ public class GameManager
     private void placement_SelectedChanged(object sender, System.EventArgs e)
     {
         var p = sender as Placement;
-        if (p.isSelected)
+        if (p.IsSelected)
         {
-            Placements.Except(p).ForAll(x => x.isSelected = false);
+            Placements.Except(p).ForAll(x => x.IsSelected = false);
 
             Graphics.instance.showTurretMenu = true;
         }
 
-        if (Placements.All(x => !x.isSelected))
+        if (Placements.All(x => !x.IsSelected))
         {
             Graphics.instance.showTurretMenu = false;
         }
