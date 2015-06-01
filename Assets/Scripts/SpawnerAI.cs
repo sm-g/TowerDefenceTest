@@ -10,8 +10,6 @@ public class SpawnerAI : MonoBehaviour
     [Range(10, 500)]
     public float waveCooldown = 10;
 
-    public GameObject[] mobPrefabs;
-
     private float waveDelayTimer = 0;
     private int waveNumber = 0;
     private GameObject[] spawnPoints;
@@ -21,8 +19,6 @@ public class SpawnerAI : MonoBehaviour
     {
         spawnPoints = GameObject.FindGameObjectsWithTag("Respawn");
 
-        if (mobPrefabs.Length == 0)
-            Debug.LogError("Add mob prefabs to " + typeof(SpawnerAI));
         if (spawnPoints.Length == 0)
             Debug.LogWarning("No spawn points on scene.");
 
@@ -62,12 +58,11 @@ public class SpawnerAI : MonoBehaviour
         var spawnPos = spawnPoint.transform.position;
         for (int i = 0; i < mobsPerWave; i++)
         {
-            var prefab = mobPrefabs[Random.Range(0, mobPrefabs.Length)];
+            var prefab = Globals.instance.mobPrefabs[Random.Range(0, Globals.instance.mobPrefabs.Length)];
             var pos = new Vector3(spawnPos.x + i * 2, spawnPos.y, spawnPos.z);
 
             var mob = Instantiate(prefab, pos, Quaternion.identity) as GameObject;
             mobsFolder.AddChild(mob);
-
         }
         Debug.LogFormat("spawn {0} mobs", mobsPerWave);
     }

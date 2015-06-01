@@ -4,18 +4,13 @@ using UnityEngine;
 
 public class TurretPlacer : SingletonMB<TurretPlacer>
 {
-    public GameObject[] turretPrefabs;
-
     private Dictionary<TurretAI, GameObject> _turrets = new Dictionary<TurretAI, GameObject>();
 
     public Dictionary<TurretAI, GameObject> Turrets { get { return _turrets; } }
 
     private void Awake()
     {
-        if (turretPrefabs.Length == 0)
-            Debug.LogError("Add turret prefabs to " + typeof(TurretPlacer));
-
-        foreach (var prefab in turretPrefabs)
+        foreach (var prefab in Globals.instance.turretPrefabs)
         {
             var ai = prefab.GetComponent<TurretAI>();
             if (ai == null)

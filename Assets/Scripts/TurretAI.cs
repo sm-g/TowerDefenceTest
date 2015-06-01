@@ -17,8 +17,6 @@ public class TurretAI : MonoBehaviour
     [Range(0.1f, 50f)]
     public float reloadTimer = 2.5f;
 
-    public GameObject projectilePrefab;
-
     private float reloadCooldown;
     private GameObject curTarget;
     private Transform turret;
@@ -27,11 +25,6 @@ public class TurretAI : MonoBehaviour
     private void Awake()
     {
         GameManager.Instance.Register(gameObject);
-
-        if (projectilePrefab == null)
-            Debug.LogError("Add projectile prefab to " + typeof(TurretAI));
-        if (projectilePrefab != null && projectilePrefab.GetComponent<ProjectileAI>() == null)
-            Debug.LogErrorFormat("Add {0} to projectile prefab", typeof(ProjectileAI));
 
         if (attackMaxDistance < attackMinDistance)
             Debug.LogWarning("Attack max distance less than min distance.");
@@ -73,20 +66,19 @@ public class TurretAI : MonoBehaviour
         }
     }
 
-    private void Shoot(GameObject curTarget)
+    private void Shoot(GameObject target)
     {
-        var proj = Instantiate(projectilePrefab, turret.position, projectilePrefab.transform.rotation) as GameObject;
+        var lookAtTarget = Quaternion.LookRotation(target.transform.position - turret.position, new Vector3(0, 90, 0));
+        var proj = Instantiate(Globals.instance.projectilePrefab, turret.position, lookAtTarget) as GameObject;
         projectilesFolder.AddChild(proj);
 
         var ai = proj.GetComponent<ProjectileAI>();
         if (ai != null)
         {
             // прицеливаем снаряд
-            ai.target = curTarget;
+            ai.target = target;
             ai.damage = attackDamage;
         }
-        else
-            GameObject.Destroy(proj);
     }
 
     /// <summary>
