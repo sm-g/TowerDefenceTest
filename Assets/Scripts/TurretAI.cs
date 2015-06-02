@@ -109,4 +109,13 @@ public class TurretAI : MonoBehaviour
         if (p > 0)
             hitPoints += p;
     }
+
+    public override string ToString()
+    {
+        return "{0}*{1}/{2} hp/s, {3} m".FormatStr(
+                    attackDamage,
+                    shotsAtOnce,
+                    reloadTimer,
+                    attackMaxDistance);
+    }
 }

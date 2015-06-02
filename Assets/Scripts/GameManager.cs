@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using UnityEngine;
 
-public class GameManager
+public class GameManager : INotifyPropertyChanged
 {
     private static GameManager _instance;
 
@@ -11,8 +12,11 @@ public class GameManager
     private List<GameObject> _turrets = new List<GameObject>();
     private List<Placement> _placements = new List<Placement>();
 
+    private int _passedMobs;
+
     public event EventHandler Won;
     public event EventHandler Lost;
+    public event PropertyChangedEventHandler PropertyChanged = delegate { };
 
     public static GameManager Instance
     {
@@ -27,8 +31,16 @@ public class GameManager
         }
     }
     public int SecondsToWin { get { return (int)(Globals.instance.goalTime - Time.time); } }
+    public int PassedMobs
+    {
+        get { return _passedMobs; }
+        private set
+        {
+            _passedMobs = value;
+            OnPropertyChanged("Lives");
+        }
+    }
 
-    public int PassedMobs { get; private set; }
     public int Lives { get { return Globals.instance.livesAtStart - PassedMobs; } }
 
 
@@ -55,15 +67,15 @@ public class GameManager
         }
     }
 
-    private static bool IsFinished(GameObject mob)
-    {
-        return mob.transform.position.x < Globals.instance.finishX;
-    }
-
     public void CheckRound()
     {
         if (SecondsToWin == 0)
             OnWon(EventArgs.Empty);
+    }
+
+    public void Restart()
+    {
+
     }
 
     public void Register(GameObject go)
@@ -126,4 +138,13 @@ public class GameManager
         }
     }
 
+    protected void OnPropertyChanged(string name)
+    {
+        PropertyChanged(this, new PropertyChangedEventArgs(name));
+    }
+
+    private static bool IsFinished(GameObject mob)
+    {
+        return mob.transform.position.x < Globals.instance.finishX;
+    }
 }
