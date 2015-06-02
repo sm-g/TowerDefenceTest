@@ -30,15 +30,12 @@ namespace Assets.Scripts
         public GameObject projectilePrefab;
         internal float finishX;
         internal float goalTime;
-        private Dictionary<TurretAI, GameObject> _turrets = new Dictionary<TurretAI, GameObject>();
-
-        public Dictionary<TurretAI, GameObject> Turrets { get { return _turrets; } }
 
         private void Awake()
         {
             goalTime = totalTime;
 
-            CheckEmptyFields();
+            CheckPrefabs();
 
             var finish = GameObject.FindGameObjectWithTag("Finish");
             if (finish == null)
@@ -57,17 +54,9 @@ namespace Assets.Scripts
                 spawner.GetComponent<SpawnerAI>()
                        .Initialize(waveCooldown, mobsPerWave, spawnPoints, mobPrefabs);
 
-            foreach (var prefab in turretPrefabs)
-            {
-                var ai = prefab.GetComponent<TurretAI>();
-                if (ai == null)
-                    Debug.LogError("No " + typeof(TurretAI) + " in prefab.");
-                else
-                    _turrets.Add(ai, prefab);
-            }
         }
 
-        private void CheckEmptyFields()
+        private void CheckPrefabs()
         {
             if (projectilePrefab == null)
                 Debug.LogError("Add projectile prefab to " + typeof(Globals));
@@ -78,6 +67,13 @@ namespace Assets.Scripts
 
             if (projectilePrefab != null && projectilePrefab.GetComponent<ProjectileAI>() == null)
                 Debug.LogErrorFormat("Add {0} to projectile prefab", typeof(ProjectileAI));
+
+            foreach (var prefab in turretPrefabs)
+            {
+                if (prefab.GetComponent<TurretAI>() == null)
+                    Debug.LogError("No " + typeof(TurretAI) + " in prefab.");
+            }
+
         }
 
         private void Start()

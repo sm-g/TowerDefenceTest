@@ -74,13 +74,14 @@ namespace Assets.Scripts
         public void OnResetClick()
         {
             GameManager.Instance.Restart();
+            SetInitialVisibility();
         }
 
-        public void OnBuildClick(TurretAI ai)
+        public void OnBuildClick(GameObject turret)
         {
             // button active only when SelectedPlace != null
             if (SelectedPlace != null)
-                SelectedPlace.SetTurret(ai);
+                SelectedPlace.SetTurret(turret);
         }
 
         private static string GetTimeToWinString()
@@ -104,29 +105,19 @@ namespace Assets.Scripts
             }
         }
 
-        //public void CreateButton(GameObject panel, Vector3 position, Vector2 size, UnityAction method, string text)
-        //{
-        //    GameObject button = new GameObject();
-        //    panel.AddChild(button);
-        //    button.AddComponent<RectTransform>().sizeDelta = size;
-        //    button.AddComponent<Text>().text = text;
-        //    button.AddComponent<Button>().onClick.AddListener(method);
-        //    button.transform.position = position;
-        //}
-
         private void CreateBuildButtons()
         {
-            foreach (TurretAI ai in Globals.instance.Turrets.Keys)
+            foreach (GameObject turret in Globals.instance.turretPrefabs)
             {
-                var aiCopy = ai;
+                var tCopy = turret;
 
                 // create btn on build panel
                 var btn = Instantiate(BuildTurretBtnPrefab) as Button;
                 btn.transform.SetParent(buildPanel.transform, false);
 
-                var t = btn.GetComponentsInChildren<Text>();
-                t[0].text = aiCopy.ToString(); // assume TurretAI will not change
-                btn.GetComponent<Button>().onClick.AddListener(() => OnBuildClick(aiCopy));
+                var text = btn.GetComponentsInChildren<Text>();
+                text[0].text = tCopy.GetComponent<TurretAI>().ToString(); // assume TurretAI immutable
+                btn.GetComponent<Button>().onClick.AddListener(() => OnBuildClick(tCopy));
             }
         }
 

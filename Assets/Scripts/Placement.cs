@@ -42,17 +42,17 @@ namespace Assets.Scripts
         }
 
         /// <summary>
-        /// Ставит новую башню.
+        /// Ставит новую башню. Существующая башня разрушается.
         /// </summary>
-        /// <param name="ai"></param>
-        public void SetTurret(TurretAI ai)
+        /// <param name="turretPrefab">Префаб башни или null.</param>
+        public void SetTurret(GameObject turretPrefab)
         {
             if (Turret != null)
                 GameObject.Destroy(Turret);
 
-            if (ai != null)
+            if (turretPrefab != null)
             {
-                Turret = Instantiate(Globals.instance.Turrets[ai], transform.position + transform.up, Quaternion.identity) as GameObject;
+                Turret = Instantiate(turretPrefab, transform.position + transform.up, Quaternion.identity) as GameObject;
                 turretsFolder.AddChild(Turret);
             }
         }
