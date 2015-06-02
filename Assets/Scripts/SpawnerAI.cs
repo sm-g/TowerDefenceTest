@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Linq;
 using UnityEngine;
 
@@ -7,7 +8,6 @@ namespace Assets.Scripts
     public class SpawnerAI : MonoBehaviour
     {
         private static GameObject mobsFolder;
-        private float waveDelayTimer = 0;
         private int waveNumber = 0;
         private GameObject[] spawnPoints;
         private float waveCooldown;
@@ -24,30 +24,43 @@ namespace Assets.Scripts
             mobsFolder = mobsFolder ?? new GameObject("Mobs");
         }
 
-        private void Update()
+        private void Start()
         {
-            if (GameManager.Instance.Mobs.Count() == 0)
-                waveDelayTimer = 0;
-
-            if (waveDelayTimer <= 0)
+            // новая волна - в начале раунда, когда убиты все мобы или пришло время
+            GameManager.Instance.RoundStarted += (s, e) =>
             {
-                // убиты все мобы или пришло время
-                MakeNewWave();
-                StartCoroutine(WaitNextWave(waveCooldown));
-            }
+                StartWave();
+                StartCoroutine(OneSecondTimer(() =>
+                {
+                    if (GameManager.Instance.Mobs.Count() == 0)
+                        StartWave();
+                }));
+            };
+            GameManager.Instance.Won += (s, e) =>
+            {
+                // stop spawn
+                StopAllCoroutines();
+            };
+            // on lost, mobs continue to arrive
         }
 
-        private void MakeNewWave()
+        /// <summary>
+        /// Начинает новую волну.
+        /// </summary>
+        private void StartWave()
         {
-            Debug.LogFormat("wave {0}", waveNumber);
+            StopCoroutine(WaitNextWave());
 
-            waveDelayTimer = waveCooldown;
+            Debug.LogFormat("=== wave {0}", waveNumber);
+
             foreach (var spawnPoint in spawnPoints)
             {
                 SpawnMobs(spawnPoint);
             }
 
             waveNumber++;
+
+            StartCoroutine(WaitNextWave());
         }
 
         /// <summary>
@@ -58,7 +71,7 @@ namespace Assets.Scripts
             var spawnPos = spawnPoint.transform.position;
             for (int i = 0; i < mobsPerWave; i++)
             {
-                var prefab = mobPrefabs[Random.Range(0, mobPrefabs.Length)];
+                var prefab = mobPrefabs[UnityEngine.Random.Range(0, mobPrefabs.Length)];
                 var pos = new Vector3(spawnPos.x + i * 2, spawnPos.y, spawnPos.z);
 
                 var mob = GameObject.Instantiate(prefab, pos, Quaternion.identity) as GameObject;
@@ -67,11 +80,18 @@ namespace Assets.Scripts
             Debug.LogFormat("spawned {0} mobs", mobsPerWave);
         }
 
-        private IEnumerator WaitNextWave(float cooldown)
+        private IEnumerator WaitNextWave()
         {
-            for (waveDelayTimer = cooldown; waveDelayTimer > 0; waveDelayTimer -= Time.deltaTime)
+            yield return new WaitForSeconds(waveCooldown);
+            StartWave();
+        }
+
+        private IEnumerator OneSecondTimer(Action act)
+        {
+            while (true)
             {
-                yield return null;
+                yield return new WaitForSeconds(1);
+                act();
             }
         }
     }

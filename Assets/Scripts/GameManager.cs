@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -14,37 +15,21 @@ namespace Assets.Scripts
         Lost
     }
 
-    public class GameManager : INotifyPropertyChanged
+    public class GameManager : SingletonMB<GameManager>, INotifyPropertyChanged
     {
-        private static GameManager _instance;
-
         private List<GameObject> _mobs = new List<GameObject>();
         private List<GameObject> _turrets = new List<GameObject>();
         private List<GameObject> _placements = new List<GameObject>();
 
-        private int _passedMobs;
-
-        private GameState _state;
+        private int passedMobs;
+        private int secToWin = -1;
+        private GameState _state = GameState.Start;
 
         public event EventHandler Won = delegate { };
-
         public event EventHandler Lost = delegate { };
-
+        public event EventHandler RoundStarted = delegate { };
         public event PropertyChangedEventHandler PropertyChanged = delegate { };
-        private int secToWin = -1;
 
-        public static GameManager Instance
-        {
-            get
-            {
-                if (_instance == null)
-                {
-                    _instance = new GameManager() { State = GameState.Playing };
-                }
-
-                return _instance;
-            }
-        }
         public GameState State
         {
             get { return _state; }
@@ -54,10 +39,13 @@ namespace Assets.Scripts
 
                 _state = value;
                 OnPropertyChanged("State");
+
                 if (value == Scripts.GameState.Won)
                     Won(this, EventArgs.Empty);
                 else if (value == Scripts.GameState.Lost)
                     Lost(this, EventArgs.Empty);
+                else if (value == Scripts.GameState.Playing)
+                    RoundStarted(this, EventArgs.Empty);
             }
         }
         /// <summary>
@@ -68,28 +56,21 @@ namespace Assets.Scripts
             get
             {
                 if (State == GameState.Playing)
-                    secToWin = (int)(Globals.instance.goalTime - Time.time);
+                    secToWin = (int)(Globals.Instance.goalTime - Time.time);
                 // stop update Time after win/lose
 
                 return secToWin;
             }
         }
 
-        public int PassedMobs
-        {
-            get { return _passedMobs; }
-            private set
-            {
-                _passedMobs = value;
-                OnPropertyChanged("Lives");
-            }
-        }
-
+        /// <summary>
+        /// Сколько осталось жизней.
+        /// </summary>
         public int Lives
         {
             get
             {
-                var res = Globals.instance.livesAtStart - PassedMobs;
+                var res = Globals.Instance.livesAtStart - passedMobs;
                 return res > 0 ? res : 0;
             }
         }
@@ -100,33 +81,65 @@ namespace Assets.Scripts
 
         public IEnumerable<GameObject> Placements { get { return _placements; } }
 
+        /// <summary>
+        /// Проверяет мобов за финишем. Живой моб отнимает одну жизнь.
+        /// Если жизней не осталось, игра заканчивается поражением.
+        /// </summary>
         public void CheckPassedMobs()
         {
-            Mobs.Where(mob => IsFinished(mob))
+            Mobs.Where(mob => mob.transform.position.x < Globals.Instance.finishX)
                 .ForEach(mob =>
                 {
                     var hp = mob.GetComponent<MobHP>();
                     if (hp.curHP > 0)
-                        PassedMobs++;
-                    hp.curHP = 0; // kill?
+                    {
+                        passedMobs++;
+                        OnPropertyChanged("Lives");
+                    }
+
+                    GameObject.Destroy(mob);
                 });
 
             if (Lives == 0)
                 State = Scripts.GameState.Lost;
         }
-
-        public void CheckRound()
+        void Start()
         {
-            if (SecondsToWin == 0)
-                State = Scripts.GameState.Won;
+
         }
 
+        private IEnumerator DoChecks()
+        {
+            while (State == GameState.Playing)
+            {
+                GameManager.Instance.CheckPassedMobs();
+                GameManager.Instance.CheckRound();
+                yield return new WaitForSeconds(0.1f);
+            }
+        }
+        /// <summary>
+        /// Проверяет время раунда. Если вышло время, игра заканчивается победой.
+        /// </summary>
+        private void CheckRound()
+        {
+            if (SecondsToWin == 0)
+            {
+                // all mobs beaten
+                _mobs.ForEach(x => GameObject.Destroy(x));
+                State = Scripts.GameState.Won;
+            }
+        }
+        /// <summary>
+        /// Начинает новый раунд.
+        /// </summary>
         public void Restart()
         {
             State = Scripts.GameState.Playing;
+            StartCoroutine(DoChecks());
+
             // _mobs.ForEach(x => GameObject.Destroy(x));
             //  _turrets.ForEach(x => GameObject.Destroy(x));
-            Application.LoadLevel(Application.loadedLevel);
+            //Application.LoadLevel(Application.loadedLevel);
             //  PassedMobs = 0;
         }
 
@@ -163,9 +176,5 @@ namespace Assets.Scripts
             PropertyChanged(this, new PropertyChangedEventArgs(name));
         }
 
-        private static bool IsFinished(GameObject mob)
-        {
-            return mob.transform.position.x < Globals.instance.finishX;
-        }
     }
 }

@@ -76,19 +76,6 @@ namespace Assets.Scripts
 
         }
 
-        private void Start()
-        {
-            StartCoroutine(DoChecks());
-        }
 
-        private IEnumerator DoChecks()
-        {
-            while (true)
-            {
-                GameManager.Instance.CheckPassedMobs();
-                GameManager.Instance.CheckRound();
-                yield return new WaitForSeconds(0.1f);
-            }
-        }
     }
 }
