@@ -31,6 +31,7 @@ namespace Assets.Scripts
         public event EventHandler Lost = delegate { };
 
         public event PropertyChangedEventHandler PropertyChanged = delegate { };
+        private int secToWin = -1;
 
         public static GameManager Instance
         {
@@ -59,12 +60,18 @@ namespace Assets.Scripts
                     Lost(this, EventArgs.Empty);
             }
         }
-
+        /// <summary>
+        /// Сколько секунд осталось продержаться до победы.
+        /// </summary>
         public int SecondsToWin
         {
             get
             {
-                return (int)(Globals.instance.goalTime - Time.time);
+                if (State == GameState.Playing)
+                    secToWin = (int)(Globals.instance.goalTime - Time.time);
+                // stop update Time after win/lose
+
+                return secToWin;
             }
         }
 
@@ -117,6 +124,10 @@ namespace Assets.Scripts
         public void Restart()
         {
             State = Scripts.GameState.Playing;
+            // _mobs.ForEach(x => GameObject.Destroy(x));
+            //  _turrets.ForEach(x => GameObject.Destroy(x));
+            Application.LoadLevel(Application.loadedLevel);
+            //  PassedMobs = 0;
         }
 
         public void Register(GameObject go)

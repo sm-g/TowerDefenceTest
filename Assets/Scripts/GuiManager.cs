@@ -35,6 +35,18 @@ namespace Assets.Scripts
             }
         }
 
+        public void OnResetClick()
+        {
+            GameManager.Instance.Restart();
+        }
+
+        public void OnBuildClick(GameObject turret)
+        {
+            // button active only when SelectedPlace != null
+            if (SelectedPlace != null)
+                SelectedPlace.SetTurret(turret);
+        }
+
         private void Awake()
         {
             FindGuiElements();
@@ -84,27 +96,14 @@ namespace Assets.Scripts
             timerText = GameObject.Find("TimerText").GetComponent<Text>();
             livesText = GameObject.Find("LivesText").GetComponent<Text>();
         }
-
-        public void OnResetClick()
-        {
-            GameManager.Instance.Restart();
-        }
-
-        public void OnBuildClick(GameObject turret)
-        {
-            // button active only when SelectedPlace != null
-            if (SelectedPlace != null)
-                SelectedPlace.SetTurret(turret);
-        }
-
-        private static string GetTimeToWinString()
+        private string GetTimeToWinString()
         {
             var guiTime = GameManager.Instance.SecondsToWin;
             var text = string.Format("{0:00}:{1:00}", guiTime / 60, guiTime % 60);
             return text;
         }
 
-        private static string GetLivesString()
+        private string GetLivesString()
         {
             return new String(liveChar, GameManager.Instance.Lives);
         }
