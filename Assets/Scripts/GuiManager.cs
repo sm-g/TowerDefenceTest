@@ -35,24 +35,31 @@ namespace Assets.Scripts
             }
         }
 
-        public void OnResetClick()
+        public void OnRestartClick()
         {
             GameManager.Instance.Restart();
         }
 
         public void OnBuildClick(GameObject turret)
         {
-            // button active only when SelectedPlace != null
             if (SelectedPlace != null)
+            {
                 SelectedPlace.SetTurret(turret);
+                SelectedPlace.IsSelected = false;
+            }
         }
 
         private void Awake()
         {
-            FindGuiElements();
-
             if (BuildTurretBtnPrefab == null)
                 Debug.LogError("Add BuildTurretBtnPrefab to " + typeof(GuiManager));
+
+            FindGuiElements();
+
+            var restartBtn = GameObject.Find("RestartBtn");
+            restartBtn.GetComponent<Button>().onClick.AddListener(OnRestartClick);
+
+            CreateBuildButtons();
 
             Placement.SelectedChanged += (s, e) =>
             {
@@ -69,20 +76,14 @@ namespace Assets.Scripts
                     case "Lives":
                         livesText.text = GetLivesString();
                         break;
+
                     case "State":
                         SetVisibility(GameManager.Instance.State);
                         break;
                 }
             };
 
-
-
-            livesText.text = GetLivesString();
-            timerText.text = GetTimeToWinString();
-
-            CreateBuildButtons();
             SetVisibility(GameManager.Instance.State);
-
             StartCoroutine(OneSecondTimer(() => timerText.text = GetTimeToWinString()));
         }
 
@@ -96,6 +97,7 @@ namespace Assets.Scripts
             timerText = GameObject.Find("TimerText").GetComponent<Text>();
             livesText = GameObject.Find("LivesText").GetComponent<Text>();
         }
+
         private string GetTimeToWinString()
         {
             var guiTime = GameManager.Instance.SecondsToWin;
@@ -144,6 +146,7 @@ namespace Assets.Scripts
                     winPanel.SetActive(false);
                     lostPanel.SetActive(false);
                     break;
+
                 case GameState.Playing:
                     statPanel.SetActive(true);
                     buildPanel.SetActive(false);
@@ -151,20 +154,22 @@ namespace Assets.Scripts
                     winPanel.SetActive(false);
                     lostPanel.SetActive(false);
                     break;
+
                 case GameState.Won:
                     buildPanel.SetActive(false);
                     shadowPanel.SetActive(true);
                     winPanel.SetActive(true);
                     break;
+
                 case GameState.Lost:
                     buildPanel.SetActive(false);
                     shadowPanel.SetActive(true);
                     lostPanel.SetActive(true);
                     break;
+
                 default:
                     throw new NotImplementedException();
             }
         }
-
     }
 }
