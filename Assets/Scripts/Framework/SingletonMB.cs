@@ -8,7 +8,7 @@ namespace Assets.Scripts
     {
         protected static T _instance;
 
-        public static T instance
+        public static T Instance
         {
             get
             {

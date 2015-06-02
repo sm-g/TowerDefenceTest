@@ -119,7 +119,7 @@ namespace Assets.Scripts
 
         private void CreateBuildButtons()
         {
-            foreach (GameObject turret in Globals.instance.turretPrefabs)
+            foreach (GameObject turret in Globals.Instance.turretPrefabs)
             {
                 var tCopy = turret;
 

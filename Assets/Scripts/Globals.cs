@@ -79,7 +79,6 @@ namespace Assets.Scripts
         private void Start()
         {
             StartCoroutine(DoChecks());
-            StartCoroutine(WaitRound());
         }
 
         private IEnumerator DoChecks()
@@ -90,16 +89,6 @@ namespace Assets.Scripts
                 GameManager.Instance.CheckRound();
                 yield return new WaitForSeconds(0.1f);
             }
-        }
-
-        private IEnumerator WaitRound()
-        {
-            yield return new WaitForSeconds(Globals.instance.goalTime - Time.time);
-        }
-
-        private void OnLose()
-        {
-            StopAllCoroutines();
         }
     }
 }
