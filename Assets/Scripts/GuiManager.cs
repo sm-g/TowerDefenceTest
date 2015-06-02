@@ -11,11 +11,10 @@ namespace Assets.Scripts
         public Button BuildTurretBtnPrefab;
 
         private static char liveChar = '+';
-        private static float margin = 10;
         private Placement _selectedPlace;
         private GameObject buildPanel;
-        private GameObject lostText;
-        private GameObject winText;
+        private GameObject lostPanel;
+        private GameObject winPanel;
         private GameObject shadowPanel;
         private Text livesText;
         private Text timerText;
@@ -38,6 +37,11 @@ namespace Assets.Scripts
 
         private void Awake()
         {
+            FindGuiElements();
+
+            if (BuildTurretBtnPrefab == null)
+                Debug.LogError("Add BuildTurretBtnPrefab to " + typeof(GuiManager));
+
             Placement.SelectedChanged += (s, e) =>
             {
                 if (e.arg.IsSelected)
@@ -48,33 +52,42 @@ namespace Assets.Scripts
 
             GameManager.Instance.PropertyChanged += (s, e) =>
             {
-                if (e.PropertyName == "Lives")
-                    livesText.text = GetLivesString();
+                switch (e.PropertyName)
+                {
+                    case "Lives":
+                        livesText.text = GetLivesString();
+                        break;
+                    case "State":
+                        SetVisibility(GameManager.Instance.State);
+                        break;
+                }
             };
 
-            buildPanel = GameObject.Find("BuildPanel");
-            statPanel = GameObject.Find("StatPanel");
-            winText = GameObject.Find("WinText");
-            lostText = GameObject.Find("LostText");
-            timerText = GameObject.Find("TimerText").GetComponent<Text>();
-            livesText = GameObject.Find("LivesText").GetComponent<Text>();
-            shadowPanel = GameObject.Find("ShadowPanel");
-            if (BuildTurretBtnPrefab == null)
-                Debug.LogError("Add BuildTurretBtnPrefab to " + typeof(GuiManager));
+
 
             livesText.text = GetLivesString();
             timerText.text = GetTimeToWinString();
 
             CreateBuildButtons();
-            SetInitialVisibility();
+            SetVisibility(GameManager.Instance.State);
 
             StartCoroutine(OneSecondTimer(() => timerText.text = GetTimeToWinString()));
+        }
+
+        private void FindGuiElements()
+        {
+            buildPanel = GameObject.Find("BuildPanel");
+            statPanel = GameObject.Find("StatPanel");
+            shadowPanel = GameObject.Find("ShadowPanel");
+            winPanel = GameObject.Find("WinText");
+            lostPanel = GameObject.Find("LostText");
+            timerText = GameObject.Find("TimerText").GetComponent<Text>();
+            livesText = GameObject.Find("LivesText").GetComponent<Text>();
         }
 
         public void OnResetClick()
         {
             GameManager.Instance.Restart();
-            SetInitialVisibility();
         }
 
         public void OnBuildClick(GameObject turret)
@@ -121,16 +134,38 @@ namespace Assets.Scripts
             }
         }
 
-        private void SetInitialVisibility()
+        private void SetVisibility(GameState state)
         {
-            if (buildPanel != null)
-                buildPanel.SetActive(false);
-            if (shadowPanel != null)
-                shadowPanel.SetActive(false);
-            if (winText != null)
-                winText.SetActive(false);
-            if (lostText != null)
-                lostText.SetActive(false);
+            switch (state)
+            {
+                case GameState.Start:
+                    statPanel.SetActive(false);
+                    buildPanel.SetActive(false);
+                    shadowPanel.SetActive(true);
+                    winPanel.SetActive(false);
+                    lostPanel.SetActive(false);
+                    break;
+                case GameState.Playing:
+                    statPanel.SetActive(true);
+                    buildPanel.SetActive(false);
+                    shadowPanel.SetActive(false);
+                    winPanel.SetActive(false);
+                    lostPanel.SetActive(false);
+                    break;
+                case GameState.Won:
+                    buildPanel.SetActive(false);
+                    shadowPanel.SetActive(true);
+                    winPanel.SetActive(true);
+                    break;
+                case GameState.Lost:
+                    buildPanel.SetActive(false);
+                    shadowPanel.SetActive(true);
+                    lostPanel.SetActive(true);
+                    break;
+                default:
+                    throw new NotImplementedException();
+            }
         }
+
     }
 }

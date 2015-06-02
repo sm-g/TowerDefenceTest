@@ -6,6 +6,14 @@ using UnityEngine;
 
 namespace Assets.Scripts
 {
+    public enum GameState
+    {
+        Start,
+        Playing,
+        Won,
+        Lost
+    }
+
     public class GameManager : INotifyPropertyChanged
     {
         private static GameManager _instance;
@@ -16,9 +24,11 @@ namespace Assets.Scripts
 
         private int _passedMobs;
 
-        public event EventHandler Won;
+        private GameState _state;
 
-        public event EventHandler Lost;
+        public event EventHandler Won = delegate { };
+
+        public event EventHandler Lost = delegate { };
 
         public event PropertyChangedEventHandler PropertyChanged = delegate { };
 
@@ -28,14 +38,35 @@ namespace Assets.Scripts
             {
                 if (_instance == null)
                 {
-                    _instance = new GameManager();
+                    _instance = new GameManager() { State = GameState.Playing };
                 }
 
                 return _instance;
             }
         }
+        public GameState State
+        {
+            get { return _state; }
+            private set
+            {
+                if (_state == value) return;
 
-        public int SecondsToWin { get { return (int)(Globals.instance.goalTime - Time.time); } }
+                _state = value;
+                OnPropertyChanged("State");
+                if (value == Scripts.GameState.Won)
+                    Won(this, EventArgs.Empty);
+                else if (value == Scripts.GameState.Lost)
+                    Lost(this, EventArgs.Empty);
+            }
+        }
+
+        public int SecondsToWin
+        {
+            get
+            {
+                return (int)(Globals.instance.goalTime - Time.time);
+            }
+        }
 
         public int PassedMobs
         {
@@ -74,19 +105,18 @@ namespace Assets.Scripts
                 });
 
             if (Lives == 0)
-            {
-                OnLost(EventArgs.Empty);
-            }
+                State = Scripts.GameState.Lost;
         }
 
         public void CheckRound()
         {
             if (SecondsToWin == 0)
-                OnWon(EventArgs.Empty);
+                State = Scripts.GameState.Won;
         }
 
         public void Restart()
         {
+            State = Scripts.GameState.Playing;
         }
 
         public void Register(GameObject go)
@@ -115,24 +145,6 @@ namespace Assets.Scripts
             _placements.Remove(go);
             _mobs.Remove(go);
             _turrets.Remove(go);
-        }
-
-        protected virtual void OnLost(EventArgs e)
-        {
-            var h = Lost;
-            if (h != null)
-            {
-                h(this, e);
-            }
-        }
-
-        protected virtual void OnWon(EventArgs e)
-        {
-            var h = Won;
-            if (h != null)
-            {
-                h(this, e);
-            }
         }
 
         protected void OnPropertyChanged(string name)
