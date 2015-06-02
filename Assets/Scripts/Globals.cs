@@ -34,7 +34,7 @@ namespace Assets.Scripts
 
         public Dictionary<TurretAI, GameObject> Turrets { get { return _turrets; } }
 
-        public void Awake()
+        private void Awake()
         {
             goalTime = totalTime;
 
@@ -80,7 +80,7 @@ namespace Assets.Scripts
                 Debug.LogErrorFormat("Add {0} to projectile prefab", typeof(ProjectileAI));
         }
 
-        public void Start()
+        private void Start()
         {
             StartCoroutine(DoChecks());
             StartCoroutine(WaitRound());

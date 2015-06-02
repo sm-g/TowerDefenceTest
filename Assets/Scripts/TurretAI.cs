@@ -91,7 +91,7 @@ namespace Assets.Scripts
         /// <summary>
         /// Возвращает ближайшего моба в области атаки.
         /// </summary>
-        public GameObject GetNearestTarget()
+        private GameObject GetNearestTarget()
         {
             float closestMobDistance = float.MaxValue;
             GameObject nearestmob = null;

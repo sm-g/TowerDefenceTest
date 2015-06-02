@@ -36,7 +36,7 @@ namespace Assets.Scripts
             }
         }
 
-        public void Awake()
+        private void Awake()
         {
             Placement.SelectedChanged += (s, e) =>
             {
