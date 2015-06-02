@@ -1,17 +1,18 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Text;
 
-[Serializable]
-public class EventArgs<T> : EventArgs
+namespace Assets.Scripts
 {
-    public readonly T arg;
-
-    [DebuggerStepThrough]
-    public EventArgs(T arg)
+    [Serializable]
+    public class EventArgs<T> : EventArgs
     {
-        this.arg = arg;
+        public readonly T arg;
+
+        [DebuggerStepThrough]
+        public EventArgs(T arg)
+        {
+            this.arg = arg;
+        }
     }
 }

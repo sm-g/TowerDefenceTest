@@ -1,30 +1,32 @@
 ﻿using System;
 using System.Linq;
-
-public static class StringExtensions
+namespace Assets.Scripts
 {
-    public static bool IsNullOrEmpty(this string str)
+    public static class StringExtensions
     {
-        return string.IsNullOrEmpty(str);
-    }
-
-    public static int CompareToNullSafe(this string one, string two)
-    {
-        if (one == null ^ two == null)
+        public static bool IsNullOrEmpty(this string str)
         {
-            return (one == null) ? -1 : 1;
+            return string.IsNullOrEmpty(str);
         }
 
-        if (one == null && two == null)
+        public static int CompareToNullSafe(this string one, string two)
         {
-            return 0;
+            if (one == null ^ two == null)
+            {
+                return (one == null) ? -1 : 1;
+            }
+
+            if (one == null && two == null)
+            {
+                return 0;
+            }
+
+            return one.CompareTo(two);
         }
 
-        return one.CompareTo(two);
-    }
-
-    public static string FormatStr(this string str, params object[] args)
-    {
-        return string.Format(str, args);
+        public static string FormatStr(this string str, params object[] args)
+        {
+            return string.Format(str, args);
+        }
     }
 }

@@ -2,91 +2,95 @@
 using System.Linq;
 using UnityEngine;
 
-/// <summary>
-/// Место для строительства башни.
-/// </summary>
-public class Placement : MonoBehaviour
+namespace Assets.Scripts
 {
-    public Color color = Color.gray;
-
     /// <summary>
-    /// Цвет места, которое выбрано для строительства.
+    /// Место для строительства башни.
     /// </summary>
-    public Color selectedColor = Color.yellow;
-
-    private bool _isSelected;
-    private GameObject turretsFolder;
-
-    public static event EventHandler<EventArgs<Placement>> SelectedChanged;
-
-    /// <summary>
-    /// Башня на этом месте.
-    /// </summary>
-    public GameObject Turret { get; private set; }
-
-    /// <summary>
-    /// Место выбрано. Одновременно выбрано только одно место на сцене.
-    /// </summary>
-    public bool IsSelected
+    public class Placement : MonoBehaviour
     {
-        get { return _isSelected; }
-        set
-        {
-            _isSelected = value;
-            gameObject.GetComponent<Renderer>().material.color = _isSelected ? selectedColor : color;
+        public Color color = Color.gray;
 
-            OnSelectedChanged();
+        /// <summary>
+        /// Цвет места, которое выбрано для строительства.
+        /// </summary>
+        public Color selectedColor = Color.yellow;
+
+        private bool _isSelected;
+        private GameObject turretsFolder;
+
+        public static event EventHandler<EventArgs<Placement>> SelectedChanged;
+
+        /// <summary>
+        /// Башня на этом месте.
+        /// </summary>
+        public GameObject Turret { get; private set; }
+
+        /// <summary>
+        /// Место выбрано. Одновременно выбрано только одно место на сцене.
+        /// </summary>
+        public bool IsSelected
+        {
+            get { return _isSelected; }
+            set
+            {
+                _isSelected = value;
+                gameObject.GetComponent<Renderer>().material.color = _isSelected ? selectedColor : color;
+
+                OnSelectedChanged();
+            }
         }
-    }
-    /// <summary>
-    /// Ставит новую башню.
-    /// </summary>
-    /// <param name="ai"></param>
-    public void SetTurret(TurretAI ai)
-    {
-        if (Turret != null)
-            GameObject.Destroy(Turret);
 
-        if (ai != null)
+        /// <summary>
+        /// Ставит новую башню.
+        /// </summary>
+        /// <param name="ai"></param>
+        public void SetTurret(TurretAI ai)
         {
-            Turret = Instantiate(Globals.instance.Turrets[ai], transform.position + transform.up, Quaternion.identity) as GameObject;
-            turretsFolder.AddChild(Turret);
+            if (Turret != null)
+                GameObject.Destroy(Turret);
+
+            if (ai != null)
+            {
+                Turret = Instantiate(Globals.instance.Turrets[ai], transform.position + transform.up, Quaternion.identity) as GameObject;
+                turretsFolder.AddChild(Turret);
+            }
         }
-    }
 
-    protected virtual void OnSelectedChanged()
-    {
-        var h = SelectedChanged;
-        if (h != null)
+        protected virtual void OnSelectedChanged()
         {
-            h(this, new EventArgs<Placement>(this));
+            var h = SelectedChanged;
+            if (h != null)
+            {
+                h(this, new EventArgs<Placement>(this));
+            }
         }
-    }
 
-    private void Awake()
-    {
-        GameManager.Instance.Register(gameObject);
-
-        IsSelected = false;
-        turretsFolder = GameObject.Find("Turrets");
-        if (turretsFolder == null)
-            turretsFolder = new GameObject("Turrets");
-
-        SelectedChanged += (s, e) =>
+        private void Awake()
         {
-            // only one selected
-            if (e.arg != this && e.arg.IsSelected)
-                IsSelected = false;
-        };
-    }
+            GameManager.Instance.Register(gameObject);
 
-    private void OnMouseDown()
-    {
-        IsSelected = !IsSelected;
-    }
+            IsSelected = false;
+            turretsFolder = GameObject.Find("Turrets");
+            if (turretsFolder == null)
+                turretsFolder = new GameObject("Turrets");
 
-    private void OnDestroy()
-    {
-        GameManager.Instance.Unregister(gameObject);
+            SelectedChanged += (s, e) =>
+            {
+                // only one selected
+                if (e.arg != this && e.arg.IsSelected)
+                    IsSelected = false;
+            };
+        }
+
+        private void OnMouseDown()
+        {
+            IsSelected = !IsSelected;
+        }
+
+        private void OnDestroy()
+        {
+            GameManager.Instance.Unregister(gameObject);
+        }
     }
 }

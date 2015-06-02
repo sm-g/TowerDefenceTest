@@ -1,70 +1,73 @@
 ﻿using System.Linq;
 using UnityEngine;
 
-public class ProjectileAI : MonoBehaviour
+namespace Assets.Scripts
 {
-    private float attackDistance = 0.1f;
-    private float speed = 10;
-    TurretAI turret;
-    private Transform projectile;
-
-    public float Damage { get; private set; }
-
-    /// <summary>
-    /// Цель снаряда. Снаряд без цели уничтожается.
-    /// </summary>
-    public GameObject Target { get; private set; }
-
-    /// <summary>
-    /// Прицеливает снаряд.
-    /// </summary>
-    /// <param name="target">Цель снаряда.</param>
-    /// <param name="turret">Башня, выпустившая снаряд.</param>
-    /// <param name="damage">Урон</param>
-    public void Initialize(GameObject target, TurretAI turret, float damage)
+    public class ProjectileAI : MonoBehaviour
     {
-        this.turret = turret;
-        Target = target;
-        Damage = damage;
-    }
+        private float attackDistance = 0.1f;
+        private float speed = 10;
+        private TurretAI turret;
+        private Transform projectile;
 
-    private void Start()
-    {
-        projectile = transform;
-    }
+        public float Damage { get; private set; }
 
-    private void Update()
-    {
-        if (Target != null && Target.activeInHierarchy)
+        /// <summary>
+        /// Цель снаряда. Снаряд без цели уничтожается.
+        /// </summary>
+        public GameObject Target { get; private set; }
+
+        /// <summary>
+        /// Прицеливает снаряд.
+        /// </summary>
+        /// <param name="target">Цель снаряда.</param>
+        /// <param name="turret">Башня, выпустившая снаряд.</param>
+        /// <param name="damage">Урон</param>
+        public void Initialize(GameObject target, TurretAI turret, float damage)
         {
-            if (Target.InRadialArea(projectile, 0, attackDistance))
-                AttackTarget();
+            this.turret = turret;
+            Target = target;
+            Damage = damage;
+        }
+
+        private void Start()
+        {
+            projectile = transform;
+        }
+
+        private void Update()
+        {
+            if (Target != null && Target.activeInHierarchy)
+            {
+                if (Target.InRadialArea(projectile, 0, attackDistance))
+                    AttackTarget();
+                else
+                    FollowTarget();
+            }
             else
-                FollowTarget();
+            {
+                // снаряд без цели
+                Destroy(gameObject);
+            }
         }
-        else
+
+        private void FollowTarget()
         {
-            // снаряд без цели
-            Destroy(gameObject);
+            var step = speed * Time.deltaTime;
+            projectile.position = Vector3.MoveTowards(transform.position, Target.transform.position, step);
         }
-    }
 
-    private void FollowTarget()
-    {
-        var step = speed * Time.deltaTime;
-        projectile.position = Vector3.MoveTowards(transform.position, Target.transform.position, step);
-    }
-
-    private void AttackTarget()
-    {
-        MobHP mhp = Target.GetComponent<MobHP>();
-        if (mhp != null)
+        private void AttackTarget()
         {
-            mhp.ChangeHP(-Damage);
-            turret.AddHitPoints(mhp.maxHP);
-        }
+            MobHP mhp = Target.GetComponent<MobHP>();
+            if (mhp != null)
+            {
+                mhp.ChangeHP(-Damage);
+                turret.AddHitPoints(mhp.maxHP);
+            }
 
-        // атака только на одну цель
-        Target = null;
+            // атака только на одну цель
+            Target = null;
+        }
     }
 }

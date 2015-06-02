@@ -2,74 +2,77 @@
 using System.Linq;
 using UnityEngine;
 
-public class SpawnerAI : MonoBehaviour
+namespace Assets.Scripts
 {
-    private static GameObject mobsFolder;
-    private float waveDelayTimer = 0;
-    private int waveNumber = 0;
-    private GameObject[] spawnPoints;
-    private float waveCooldown;
-    private int mobsPerWave;
-    private GameObject[] mobPrefabs;
-
-    public void Initialize(float waveCooldown, int mobsPerWave, GameObject[] spawnPoints, GameObject[] mobPrefabs)
+    public class SpawnerAI : MonoBehaviour
     {
-        this.waveCooldown = waveCooldown;
-        this.mobsPerWave = mobsPerWave;
-        this.spawnPoints = spawnPoints;
-        this.mobPrefabs = mobPrefabs;
+        private static GameObject mobsFolder;
+        private float waveDelayTimer = 0;
+        private int waveNumber = 0;
+        private GameObject[] spawnPoints;
+        private float waveCooldown;
+        private int mobsPerWave;
+        private GameObject[] mobPrefabs;
 
-        mobsFolder = mobsFolder ?? new GameObject("Mobs");
-    }
-
-    private void Update()
-    {
-        if (GameManager.Instance.Mobs.Count() == 0)
-            waveDelayTimer = 0;
-
-        if (waveDelayTimer <= 0)
+        public void Initialize(float waveCooldown, int mobsPerWave, GameObject[] spawnPoints, GameObject[] mobPrefabs)
         {
-            // убиты все мобы или пришло время
-            MakeNewWave();
-            StartCoroutine(WaitNextWave(waveCooldown));
-        }
-    }
+            this.waveCooldown = waveCooldown;
+            this.mobsPerWave = mobsPerWave;
+            this.spawnPoints = spawnPoints;
+            this.mobPrefabs = mobPrefabs;
 
-    private void MakeNewWave()
-    {
-        Debug.LogFormat("wave {0}", waveNumber);
-
-        waveDelayTimer = waveCooldown;
-        foreach (var spawnPoint in spawnPoints)
-        {
-            SpawnMobs(spawnPoint);
+            mobsFolder = mobsFolder ?? new GameObject("Mobs");
         }
 
-        waveNumber++;
-    }
-
-    /// <summary>
-    /// Создает ряд случайных мобов через 1 клетку в точке респауна.
-    /// </summary>
-    private void SpawnMobs(GameObject spawnPoint)
-    {
-        var spawnPos = spawnPoint.transform.position;
-        for (int i = 0; i < mobsPerWave; i++)
+        private void Update()
         {
-            var prefab = mobPrefabs[Random.Range(0, mobPrefabs.Length)];
-            var pos = new Vector3(spawnPos.x + i * 2, spawnPos.y, spawnPos.z);
+            if (GameManager.Instance.Mobs.Count() == 0)
+                waveDelayTimer = 0;
 
-            var mob = GameObject.Instantiate(prefab, pos, Quaternion.identity) as GameObject;
-            mobsFolder.AddChild(mob);
+            if (waveDelayTimer <= 0)
+            {
+                // убиты все мобы или пришло время
+                MakeNewWave();
+                StartCoroutine(WaitNextWave(waveCooldown));
+            }
         }
-        Debug.LogFormat("spawned {0} mobs", mobsPerWave);
-    }
 
-    private IEnumerator WaitNextWave(float cooldown)
-    {
-        for (waveDelayTimer = cooldown; waveDelayTimer > 0; waveDelayTimer -= Time.deltaTime)
+        private void MakeNewWave()
         {
-            yield return null;
+            Debug.LogFormat("wave {0}", waveNumber);
+
+            waveDelayTimer = waveCooldown;
+            foreach (var spawnPoint in spawnPoints)
+            {
+                SpawnMobs(spawnPoint);
+            }
+
+            waveNumber++;
+        }
+
+        /// <summary>
+        /// Создает ряд случайных мобов через 1 клетку в точке респауна.
+        /// </summary>
+        private void SpawnMobs(GameObject spawnPoint)
+        {
+            var spawnPos = spawnPoint.transform.position;
+            for (int i = 0; i < mobsPerWave; i++)
+            {
+                var prefab = mobPrefabs[Random.Range(0, mobPrefabs.Length)];
+                var pos = new Vector3(spawnPos.x + i * 2, spawnPos.y, spawnPos.z);
+
+                var mob = GameObject.Instantiate(prefab, pos, Quaternion.identity) as GameObject;
+                mobsFolder.AddChild(mob);
+            }
+            Debug.LogFormat("spawned {0} mobs", mobsPerWave);
+        }
+
+        private IEnumerator WaitNextWave(float cooldown)
+        {
+            for (waveDelayTimer = cooldown; waveDelayTimer > 0; waveDelayTimer -= Time.deltaTime)
+            {
+                yield return null;
+            }
         }
     }
 }

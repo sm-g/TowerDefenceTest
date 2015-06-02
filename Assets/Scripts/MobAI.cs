@@ -1,23 +1,26 @@
 ﻿using UnityEngine;
 
-/// <summary>
-/// Поведение моба.
-/// </summary>
-public class MobAI : MonoBehaviour
+namespace Assets.Scripts
 {
-    [Range(0, 5)]
-    public float speed = 1f;
 
-    private Transform mob;
-
-    private void Awake()
+    /// <summary>
+    /// Поведение моба.
+    /// </summary>
+    public class MobAI : MonoBehaviour
     {
-        mob = transform;
-    }
+        [Range(0, 5)]
+        public float speed = 1f;
 
-    private void Update()
-    {
-        mob.Translate(Vector3.left * speed * Time.deltaTime);
-    }
+        private Transform mob;
 
+        private void Awake()
+        {
+            mob = transform;
+        }
+
+        private void Update()
+        {
+            mob.Translate(Vector3.left * speed * Time.deltaTime);
+        }
+    }
 }
