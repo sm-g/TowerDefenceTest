@@ -11,7 +11,7 @@ namespace Assets.Scripts
         [Range(0, 5)]
         public float attackMinDistance = 0.1f;
 
-        [Range(1, 20)]
+        [Range(1, 100)]
         public int attackDamage = 10;
 
         [Range(0, 5)]
