@@ -5,10 +5,10 @@ namespace Assets.Scripts
     public class MobHP : MonoBehaviour
     {
         [Range(0, 100)]
-        public float maxHP = 30;
+        public int maxHP = 30;
 
         [Range(0, 100)]
-        public float curHP = 30;
+        public int curHP = 30;
 
         public Color maxDamageColor = Color.red;
         public Color minDamageColor = Color.blue;
@@ -19,10 +19,10 @@ namespace Assets.Scripts
             curHP = Mathf.Min(curHP, maxHP); // curHP <= maxHP
         }
 
-        public void ChangeHP(float adjust)
+        public void TakeDamage(int damage)
         {
-            curHP += adjust;
-            curHP = Mathf.Min(curHP, maxHP);
+            if (damage > 0)
+                curHP -= damage;
         }
 
         private void Update()

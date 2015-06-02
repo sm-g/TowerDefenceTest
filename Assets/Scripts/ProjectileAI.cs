@@ -10,7 +10,7 @@ namespace Assets.Scripts
         private TurretAI turret;
         private Transform projectile;
 
-        public float Damage { get; private set; }
+        public int Damage { get; private set; }
 
         /// <summary>
         /// Цель снаряда. Снаряд без цели уничтожается.
@@ -23,7 +23,7 @@ namespace Assets.Scripts
         /// <param name="target">Цель снаряда.</param>
         /// <param name="turret">Башня, выпустившая снаряд.</param>
         /// <param name="damage">Урон</param>
-        public void Initialize(GameObject target, TurretAI turret, float damage)
+        public void Initialize(GameObject target, TurretAI turret, int damage)
         {
             this.turret = turret;
             Target = target;
@@ -62,8 +62,8 @@ namespace Assets.Scripts
             MobHP mhp = Target.GetComponent<MobHP>();
             if (mhp != null)
             {
-                mhp.ChangeHP(-Damage);
-                turret.AddHitPoints(mhp.maxHP);
+                mhp.TakeDamage(Damage);
+                turret.AddXp(mhp.maxHP);
             }
 
             // атака только на одну цель

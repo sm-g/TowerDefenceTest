@@ -5,13 +5,14 @@ namespace Assets.Scripts
 {
     public class TurretAI : MonoBehaviour
     {
-        [Range(0, 500)]
+        [Range(0, 50)]
         public float attackMaxDistance = 50.0f;
 
         [Range(0, 5)]
         public float attackMinDistance = 0.1f;
 
-        public float attackDamage = 10.0f;
+        [Range(1, 20)]
+        public int attackDamage = 10;
 
         [Range(0, 5)]
         public int shotsAtOnce = 1;
@@ -20,7 +21,7 @@ namespace Assets.Scripts
         public float reloadTimer = 2.5f;
 
         private float reloadCooldown;
-        private float hitPoints;
+        private int xp;
         private GameObject curTarget;
         private Transform turret;
         private GameObject projectilesFolder;
@@ -107,10 +108,10 @@ namespace Assets.Scripts
             return closestMobDistance > attackMaxDistance ? null : nearestmob;
         }
 
-        public void AddHitPoints(float p)
+        public void AddXp(int points)
         {
-            if (p > 0)
-                hitPoints += p;
+            if (points > 0)
+                xp += points;
         }
 
         public override string ToString()
