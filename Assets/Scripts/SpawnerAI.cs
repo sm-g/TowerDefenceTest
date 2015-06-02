@@ -10,12 +10,14 @@ public class SpawnerAI : MonoBehaviour
     private GameObject[] spawnPoints;
     private float waveCooldown;
     private int mobsPerWave;
+    private GameObject[] mobPrefabs;
 
-    public void Initialize(float waveCooldown, int mobsPerWave, GameObject[] spawnPoints)
+    public void Initialize(float waveCooldown, int mobsPerWave, GameObject[] spawnPoints, GameObject[] mobPrefabs)
     {
         this.waveCooldown = waveCooldown;
         this.mobsPerWave = mobsPerWave;
         this.spawnPoints = spawnPoints;
+        this.mobPrefabs = mobPrefabs;
 
         mobsFolder = mobsFolder ?? new GameObject("Mobs");
     }
@@ -54,7 +56,7 @@ public class SpawnerAI : MonoBehaviour
         var spawnPos = spawnPoint.transform.position;
         for (int i = 0; i < mobsPerWave; i++)
         {
-            var prefab = Globals.instance.mobPrefabs[Random.Range(0, Globals.instance.mobPrefabs.Length)];
+            var prefab = mobPrefabs[Random.Range(0, mobPrefabs.Length)];
             var pos = new Vector3(spawnPos.x + i * 2, spawnPos.y, spawnPos.z);
 
             var mob = GameObject.Instantiate(prefab, pos, Quaternion.identity) as GameObject;

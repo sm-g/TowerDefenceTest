@@ -5,11 +5,14 @@ using UnityEngine;
 
 public class Globals : SingletonMB<Globals>
 {
+    /// <summary>
+    /// Время до победы в секундах.
+    /// </summary>
     [Range(60, 10 * 60)]
     public float totalTime = 3 * 60;
 
     [Range(1, 50)]
-    public int livesAtStart = 3;
+    public int livesAtStart = 5;
 
     [Range(1, 10)]
     public int mobsPerWave = 3;
@@ -51,7 +54,7 @@ public class Globals : SingletonMB<Globals>
             Debug.LogError("No spawner on scene.");
         else
             spawner.GetComponent<SpawnerAI>()
-                   .Initialize(waveCooldown, mobsPerWave, spawnPoints);
+                   .Initialize(waveCooldown, mobsPerWave, spawnPoints, mobPrefabs);
 
         foreach (var prefab in turretPrefabs)
         {

@@ -4,18 +4,21 @@ using System.ComponentModel;
 using System.Linq;
 using UnityEngine;
 
+
 public class GameManager : INotifyPropertyChanged
 {
     private static GameManager _instance;
 
     private List<GameObject> _mobs = new List<GameObject>();
     private List<GameObject> _turrets = new List<GameObject>();
-    private List<Placement> _placements = new List<Placement>();
+    private List<GameObject> _placements = new List<GameObject>();
 
     private int _passedMobs;
 
     public event EventHandler Won;
+
     public event EventHandler Lost;
+
     public event PropertyChangedEventHandler PropertyChanged = delegate { };
 
     public static GameManager Instance
@@ -41,14 +44,20 @@ public class GameManager : INotifyPropertyChanged
         }
     }
 
-    public int Lives { get { return Globals.instance.livesAtStart - PassedMobs; } }
-
+    public int Lives
+    {
+        get
+        {
+            var res = Globals.instance.livesAtStart - PassedMobs;
+            return res > 0 ? res : 0;
+        }
+    }
 
     public IEnumerable<GameObject> Mobs { get { return _mobs; } }
 
     public IEnumerable<GameObject> Turrets { get { return _turrets; } }
 
-    public IEnumerable<Placement> Placements { get { return _placements; } }
+    public IEnumerable<GameObject> Placements { get { return _placements; } }
 
     public void CheckPassedMobs()
     {
@@ -83,7 +92,7 @@ public class GameManager : INotifyPropertyChanged
         var placement = go.GetComponent<Placement>();
         if (placement != null)
         {
-            _placements.Add(placement);
+            _placements.Add(go);
         }
 
         var mob = go.GetComponent<MobHP>();
@@ -101,23 +110,9 @@ public class GameManager : INotifyPropertyChanged
 
     public void Unregister(GameObject go)
     {
-        var placement = go.GetComponent<Placement>();
-        if (placement != null)
-        {
-            _placements.Remove(placement);
-        }
-
-        var mob = go.GetComponent<MobHP>();
-        if (mob != null)
-        {
-            _mobs.Remove(go);
-        }
-
-        var turret = go.GetComponent<TurretAI>();
-        if (turret != null)
-        {
-            _turrets.Remove(go);
-        }
+        _placements.Remove(go);
+        _mobs.Remove(go);
+        _turrets.Remove(go);
     }
 
     protected virtual void OnLost(EventArgs e)
