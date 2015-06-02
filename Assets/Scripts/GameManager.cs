@@ -48,6 +48,7 @@ namespace Assets.Scripts
                     RoundStarted(this, EventArgs.Empty);
             }
         }
+
         /// <summary>
         /// Сколько секунд осталось продержаться до победы.
         /// </summary>
@@ -81,54 +82,10 @@ namespace Assets.Scripts
 
         public IEnumerable<GameObject> Placements { get { return _placements; } }
 
-        /// <summary>
-        /// Проверяет мобов за финишем. Живой моб отнимает одну жизнь.
-        /// Если жизней не осталось, игра заканчивается поражением.
-        /// </summary>
-        public void CheckPassedMobs()
+        private void Start()
         {
-            Mobs.Where(mob => mob.transform.position.x < Globals.Instance.finishX)
-                .ForEach(mob =>
-                {
-                    var hp = mob.GetComponent<MobHP>();
-                    if (hp.curHP > 0)
-                    {
-                        passedMobs++;
-                        OnPropertyChanged("Lives");
-                    }
-
-                    GameObject.Destroy(mob);
-                });
-
-            if (Lives == 0)
-                State = Scripts.GameState.Lost;
-        }
-        void Start()
-        {
-
         }
 
-        private IEnumerator DoChecks()
-        {
-            while (State == GameState.Playing)
-            {
-                GameManager.Instance.CheckPassedMobs();
-                GameManager.Instance.CheckRound();
-                yield return new WaitForSeconds(0.1f);
-            }
-        }
-        /// <summary>
-        /// Проверяет время раунда. Если вышло время, игра заканчивается победой.
-        /// </summary>
-        private void CheckRound()
-        {
-            if (SecondsToWin == 0)
-            {
-                // all mobs beaten
-                _mobs.ForEach(x => GameObject.Destroy(x));
-                State = Scripts.GameState.Won;
-            }
-        }
         /// <summary>
         /// Начинает новый раунд.
         /// </summary>
@@ -171,10 +128,55 @@ namespace Assets.Scripts
             _turrets.Remove(go);
         }
 
+        private IEnumerator DoChecks()
+        {
+            while (State == GameState.Playing)
+            {
+                GameManager.Instance.CheckPassedMobs();
+                GameManager.Instance.CheckRound();
+                yield return new WaitForSeconds(0.1f);
+            }
+        }
+
+        /// <summary>
+        /// Проверяет мобов за финишем. Живой моб отнимает одну жизнь.
+        /// Если жизней не осталось, игра заканчивается поражением.
+        /// </summary>
+        private void CheckPassedMobs()
+        {
+            Mobs.Where(mob => mob.transform.position.x < Globals.Instance.finishX)
+                .ForEach(mob =>
+                {
+                    var hp = mob.GetComponent<MobHP>();
+                    if (hp.curHP > 0)
+                    {
+                        passedMobs++;
+                        OnPropertyChanged("Lives");
+                    }
+
+                    GameObject.Destroy(mob);
+                });
+
+            if (Lives == 0)
+                State = Scripts.GameState.Lost;
+        }
+
+        /// <summary>
+        /// Проверяет время раунда. Если вышло время, игра заканчивается победой.
+        /// </summary>
+        private void CheckRound()
+        {
+            if (SecondsToWin == 0)
+            {
+                // all mobs beaten
+                _mobs.ForEach(x => GameObject.Destroy(x));
+                State = Scripts.GameState.Won;
+            }
+        }
+
         protected void OnPropertyChanged(string name)
         {
             PropertyChanged(this, new PropertyChangedEventArgs(name));
         }
-
     }
 }
