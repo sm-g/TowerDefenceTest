@@ -1,12 +1,11 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using UnityEngine;
 
 namespace Assets.Scripts
 {
     public class TurretAI : MonoBehaviour
     {
-        public FloatCount attackDistance = new FloatCount(0.1f, 50.0f);
+        public FloatCount attackDistance = new FloatCount(0.1f, 6.0f);
 
         [Range(1, 100)]
         public int attackDamage = 10;
@@ -21,6 +20,7 @@ namespace Assets.Scripts
         public Color attackingColor = Color.magenta;
 
         private static GameObject projectilesFolder;
+        private static float maxAttackDistance = 15;
         private float reloadCooldown;
         private int xp;
         private GameObject _target;
@@ -47,12 +47,14 @@ namespace Assets.Scripts
             projectilesFolder = projectilesFolder ?? new GameObject(Generated.Projectiles);
             reloadCooldown = reloadTimer;
             material = gameObject.GetComponent<Renderer>().material;
-
         }
 
         private void Start()
         {
             turret = transform;
+            // высота по дальности атаки
+            var yScale = Mathf.Lerp(1, 3, attackDistance.maximum / maxAttackDistance);
+            turret.localScale = new Vector3(1, yScale, 1);
         }
 
         private void Update()
