@@ -75,7 +75,8 @@ namespace Assets.Scripts
 
         private void OnMouseDown()
         {
-            IsSelected = !IsSelected;
+            if (GameManager.Instance.State == GameState.Playing)
+                IsSelected = !IsSelected;
         }
 
         private void OnDestroy()

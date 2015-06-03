@@ -28,5 +28,6 @@ namespace Assets.Scripts
         public static string TimerText = "TimerText";
         public static string LivesText = "LivesText";
         public static string RestartButton = "RestartBtn";
+        public static string StartText = "StartText";
     }
 }

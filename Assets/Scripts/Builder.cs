@@ -18,7 +18,7 @@ namespace Assets.Scripts
         public Placement SelectedPlace
         {
             get { return _selectedPlace; }
-            set
+            private set
             {
                 _selectedPlace = value;
                 OnPropertyChanged("SelectedPlace");
@@ -29,6 +29,8 @@ namespace Assets.Scripts
         {
             if (SelectedPlace != null)
             {
+                Debug.Log("Build turret " + turret);
+
                 SelectedPlace.SetTurret(turret);
                 SelectedPlace.IsSelected = false;
             }

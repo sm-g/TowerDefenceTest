@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
@@ -18,6 +19,9 @@ namespace Assets.Scripts
         private Text livesText;
         private Text timerText;
         private GameObject statPanel;
+        private GameObject startPanel;
+        private Dictionary<GameState, GameObject[]> visiblePanels = new Dictionary<GameState, GameObject[]>();
+        private GameObject[] allPanels;
 
         public void OnRestartClick()
         {
@@ -73,6 +77,7 @@ namespace Assets.Scripts
         {
             var restartBtn = GameObject.Find(Gui.RestartButton);
             restartBtn.GetComponent<Button>().onClick.AddListener(OnRestartClick);
+            startPanel.GetComponent<Button>().onClick.AddListener(OnRestartClick);
             lostPanel.GetComponent<Button>().onClick.AddListener(OnRestartClick);
             winPanel.GetComponent<Button>().onClick.AddListener(OnRestartClick);
         }
@@ -84,8 +89,15 @@ namespace Assets.Scripts
             shadowPanel = GameObject.Find(Gui.ShadowPanel);
             winPanel = GameObject.Find(Gui.WinText);
             lostPanel = GameObject.Find(Gui.LostText);
+            startPanel = GameObject.Find(Gui.StartText);
             timerText = GameObject.Find(Gui.TimerText).GetComponent<Text>();
             livesText = GameObject.Find(Gui.LivesText).GetComponent<Text>();
+
+            allPanels = new[] { buildPanel, statPanel, shadowPanel, winPanel, lostPanel, startPanel };
+            visiblePanels[GameState.Start] = new[] { shadowPanel, startPanel };
+            visiblePanels[GameState.Playing] = new[] { statPanel };
+            visiblePanels[GameState.Won] = new[] { shadowPanel, winPanel };
+            visiblePanels[GameState.Lost] = new[] { shadowPanel, lostPanel };
         }
 
         private string GetTimeToWinString()
@@ -118,38 +130,13 @@ namespace Assets.Scripts
 
         private void SetVisibility(GameState state)
         {
-            switch (state)
+            foreach (var panel in allPanels)
             {
-                case GameState.Start:
-                    statPanel.SetActive(false);
-                    buildPanel.SetActive(false);
-                    shadowPanel.SetActive(true);
-                    winPanel.SetActive(false);
-                    lostPanel.SetActive(false);
-                    break;
-
-                case GameState.Playing:
-                    statPanel.SetActive(true);
-                    buildPanel.SetActive(false);
-                    shadowPanel.SetActive(false);
-                    winPanel.SetActive(false);
-                    lostPanel.SetActive(false);
-                    break;
-
-                case GameState.Won:
-                    buildPanel.SetActive(false);
-                    shadowPanel.SetActive(true);
-                    winPanel.SetActive(true);
-                    break;
-
-                case GameState.Lost:
-                    buildPanel.SetActive(false);
-                    shadowPanel.SetActive(true);
-                    lostPanel.SetActive(true);
-                    break;
-
-                default:
-                    throw new NotImplementedException();
+                panel.SetActive(false);
+            }
+            foreach (var panel in visiblePanels[state])
+            {
+                panel.SetActive(true);
             }
         }
 
