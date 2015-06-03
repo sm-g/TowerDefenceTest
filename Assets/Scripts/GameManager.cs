@@ -44,6 +44,7 @@ namespace Assets.Scripts
 
                 _state = value;
                 OnPropertyChanged("State");
+                Debug.Log("Game state = " + value);
 
                 switch (value)
                 {
@@ -120,18 +121,18 @@ namespace Assets.Scripts
         /// </summary>
         public void Restart()
         {
-            Debug.Log("restart");
-
             // перезапуск
             State = Scripts.GameState.Start;
+            ClearLevel();
             State = Scripts.GameState.Playing;
 
-            ClearLevel();
             StartCoroutine(DoPlayingChecks());
         }
 
         private void ClearLevel()
         {
+            Debug.Log("clear level");
+
             _mobs.ForEach(x => GameObject.Destroy(x));
             _turrets.ForEach(x => GameObject.Destroy(x));
             PassedMobs = 0;
@@ -161,6 +162,7 @@ namespace Assets.Scripts
 
         public void Unregister(GameObject go)
         {
+            //Debug.Log("unregister " + go);
             _placements.Remove(go);
             _mobs.Remove(go);
             _turrets.Remove(go);
