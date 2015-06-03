@@ -21,13 +21,18 @@ namespace Assets.Scripts
         private List<GameObject> _turrets = new List<GameObject>();
         private List<GameObject> _placements = new List<GameObject>();
 
-        private int passedMobs;
+        private int _passedMobs;
         private int secToWin = -1;
+        private float goalTime;
+        private LevelSettings levelScript;
         private GameState _state = GameState.Start;
 
         public event EventHandler Won = delegate { };
+
         public event EventHandler Lost = delegate { };
+
         public event EventHandler RoundStarted = delegate { };
+
         public event PropertyChangedEventHandler PropertyChanged = delegate { };
 
         public GameState State
@@ -40,12 +45,24 @@ namespace Assets.Scripts
                 _state = value;
                 OnPropertyChanged("State");
 
-                if (value == Scripts.GameState.Won)
-                    Won(this, EventArgs.Empty);
-                else if (value == Scripts.GameState.Lost)
-                    Lost(this, EventArgs.Empty);
-                else if (value == Scripts.GameState.Playing)
-                    RoundStarted(this, EventArgs.Empty);
+                switch (value)
+                {
+                    case GameState.Start:
+
+                        break;
+
+                    case GameState.Playing:
+                        RoundStarted(this, EventArgs.Empty);
+                        break;
+
+                    case GameState.Won:
+                        Won(this, EventArgs.Empty);
+                        break;
+
+                    case GameState.Lost:
+                        Lost(this, EventArgs.Empty);
+                        break;
+                }
             }
         }
 
@@ -57,7 +74,7 @@ namespace Assets.Scripts
             get
             {
                 if (State == GameState.Playing)
-                    secToWin = (int)(Globals.Instance.goalTime - Time.time);
+                    secToWin = (int)(goalTime - Time.timeSinceLevelLoad);
                 // stop update Time after win/lose
 
                 return secToWin;
@@ -71,8 +88,18 @@ namespace Assets.Scripts
         {
             get
             {
-                var res = Globals.Instance.livesAtStart - passedMobs;
+                var res = levelScript.livesAtStart - PassedMobs;
                 return res > 0 ? res : 0;
+            }
+        }
+
+        public int PassedMobs
+        {
+            get { return _passedMobs; }
+            private set
+            {
+                _passedMobs = value;
+                OnPropertyChanged("Lives");
             }
         }
 
@@ -82,8 +109,10 @@ namespace Assets.Scripts
 
         public IEnumerable<GameObject> Placements { get { return _placements; } }
 
-        private void Start()
+        private void Awake()
         {
+            DontDestroyOnLoad(Instance.gameObject);
+            levelScript = GetComponent<LevelSettings>();
         }
 
         /// <summary>
@@ -91,13 +120,22 @@ namespace Assets.Scripts
         /// </summary>
         public void Restart()
         {
-            State = Scripts.GameState.Playing;
-            StartCoroutine(DoChecks());
+            Debug.Log("restart");
 
-            // _mobs.ForEach(x => GameObject.Destroy(x));
-            //  _turrets.ForEach(x => GameObject.Destroy(x));
-            //Application.LoadLevel(Application.loadedLevel);
-            //  PassedMobs = 0;
+            // перезапуск
+            State = Scripts.GameState.Start;
+            State = Scripts.GameState.Playing;
+
+            ClearLevel();
+            StartCoroutine(DoPlayingChecks());
+        }
+
+        private void ClearLevel()
+        {
+            _mobs.ForEach(x => GameObject.Destroy(x));
+            _turrets.ForEach(x => GameObject.Destroy(x));
+            PassedMobs = 0;
+            goalTime = levelScript.totalTime + Time.timeSinceLevelLoad;
         }
 
         public void Register(GameObject go)
@@ -128,7 +166,7 @@ namespace Assets.Scripts
             _turrets.Remove(go);
         }
 
-        private IEnumerator DoChecks()
+        private IEnumerator DoPlayingChecks()
         {
             while (State == GameState.Playing)
             {
@@ -144,14 +182,13 @@ namespace Assets.Scripts
         /// </summary>
         private void CheckPassedMobs()
         {
-            Mobs.Where(mob => mob.transform.position.x < Globals.Instance.finishX)
+            Mobs.Where(mob => mob.transform.position.x < levelScript.finishX)
                 .ForEach(mob =>
                 {
                     var hp = mob.GetComponent<MobHP>();
                     if (hp.curHP > 0)
                     {
-                        passedMobs++;
-                        OnPropertyChanged("Lives");
+                        PassedMobs++;
                     }
 
                     GameObject.Destroy(mob);

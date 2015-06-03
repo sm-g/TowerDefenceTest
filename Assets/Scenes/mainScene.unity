@@ -1320,6 +1320,7 @@ GameObject:
   - 114: {fileID: 1579775074}
   - 114: {fileID: 1579775076}
   - 114: {fileID: 1579775077}
+  - 114: {fileID: 1579775078}
   m_Layer: 0
   m_Name: Scripts
   m_TagString: Untagged
@@ -1338,10 +1339,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 14e1f2bad32bf104e86cb760b34ea237, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  totalTime: 180
-  livesAtStart: 5
-  mobsPerWave: 3
-  waveCooldown: 10
   mobPrefabs:
   - {fileID: 147162, guid: 4966c6293393cf0409b8c2dcde7e3e9e, type: 2}
   - {fileID: 147162, guid: 18f96c5a89de6504e942527caba3a5e1, type: 2}
@@ -1385,6 +1382,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 92dc739fef049bb4a95cfc9bc68fc0c0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  mobsPerWave: 3
+  waveCooldown: 10
+--- !u!114 &1579775078
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1579775073}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5fa4fcae1f6efa6469df910588c355d5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  totalTime: 30
+  livesAtStart: 5
 --- !u!1 &1615453021
 GameObject:
   m_ObjectHideFlags: 0

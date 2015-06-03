@@ -7,21 +7,33 @@ namespace Assets.Scripts
 {
     public class SpawnerAI : MonoBehaviour
     {
+        [Range(1, 10)]
+        public int mobsPerWave = 3;
+
+        /// <summary>
+        /// Задержка между волнами в секундах.
+        /// </summary>
+        [Range(10, 500)]
+        public float waveCooldown = 10;
+
         private static GameObject mobsFolder;
         private int waveNumber = 0;
         private GameObject[] spawnPoints;
-        private float waveCooldown;
-        private int mobsPerWave;
         private GameObject[] mobPrefabs;
 
-        public void Initialize(float waveCooldown, int mobsPerWave, GameObject[] spawnPoints, GameObject[] mobPrefabs)
+        public void Initialize(GameObject[] mobPrefabs)
         {
-            this.waveCooldown = waveCooldown;
-            this.mobsPerWave = mobsPerWave;
-            this.spawnPoints = spawnPoints;
             this.mobPrefabs = mobPrefabs;
+        }
+
+        private void Awake()
+        {
+            spawnPoints = GameObject.FindGameObjectsWithTag("Respawn");
+            if (spawnPoints.Length == 0)
+                Debug.LogWarning("No spawn points on scene.");
 
             mobsFolder = mobsFolder ?? new GameObject("Mobs");
+            DontDestroyOnLoad(gameObject);
         }
 
         private void Start()
@@ -29,11 +41,17 @@ namespace Assets.Scripts
             // новая волна - в начале раунда, когда убиты все мобы или пришло время
             GameManager.Instance.RoundStarted += (s, e) =>
             {
+                StopAllCoroutines();
+
                 StartWave();
+
                 StartCoroutine(OneSecondTimer(() =>
                 {
-                    if (GameManager.Instance.Mobs.Count() == 0)
+                    if (CanStartOutOfTurnWave())
+                    {
+                        Debug.Log("Out Of Turn Wave");
                         StartWave();
+                    }
                 }));
             };
             GameManager.Instance.Won += (s, e) =>
@@ -41,7 +59,17 @@ namespace Assets.Scripts
                 // stop spawn
                 StopAllCoroutines();
             };
+        }
+
+        /// <summary>
+        /// Можно ли начать волну до завершения времени на текущую.
+        /// </summary>
+        private static bool CanStartOutOfTurnWave()
+        {
             // on lost, mobs continue to arrive
+            return GameManager.Instance.Mobs.Count() == 0 &&
+                (GameManager.Instance.State == GameState.Playing ||
+                 GameManager.Instance.State == GameState.Lost);
         }
 
         /// <summary>

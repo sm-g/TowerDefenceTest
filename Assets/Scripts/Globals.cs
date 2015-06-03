@@ -7,53 +7,25 @@ namespace Assets.Scripts
 {
     public class Globals : SingletonMB<Globals>
     {
-        /// <summary>
-        /// Время до победы в секундах.
-        /// </summary>
-        [Range(60, 10 * 60)]
-        public float totalTime = 3 * 60;
-
-        [Range(1, 50)]
-        public int livesAtStart = 5;
-
-        [Range(1, 10)]
-        public int mobsPerWave = 3;
-
-        /// <summary>
-        /// Задержка между волнами в секундах.
-        /// </summary>
-        [Range(10, 500)]
-        public float waveCooldown = 10;
-
         public GameObject[] mobPrefabs;
         public GameObject[] turretPrefabs;
         public GameObject projectilePrefab;
-        internal float finishX;
-        internal float goalTime;
 
         private void Awake()
         {
-            goalTime = totalTime;
-
             CheckPrefabs();
 
-            var finish = GameObject.FindGameObjectWithTag("Finish");
-            if (finish == null)
-                Debug.LogError("Add tag 'Finish' to finish line.");
+            var scripts = GameObject.Find("Scripts");
+            if (scripts == null)
+                Debug.LogError("No Scripts on scene.");
             else
-                finishX = finish.transform.position.x;
-
-            var spawnPoints = GameObject.FindGameObjectsWithTag("Respawn");
-            if (spawnPoints.Length == 0)
-                Debug.LogWarning("No spawn points on scene.");
-
-            var spawner = GameObject.Find("Spawner");
-            if (spawner == null)
-                Debug.LogError("No spawner on scene.");
-            else
-                spawner.GetComponent<SpawnerAI>()
-                       .Initialize(waveCooldown, mobsPerWave, spawnPoints, mobPrefabs);
-
+            {
+                var spawner = scripts.GetComponent<SpawnerAI>();
+                if (spawner == null)
+                    Debug.LogError("Add SpawnerAI to Scripts.");
+                else
+                    spawner.Initialize(mobPrefabs);
+            }
         }
 
         private void CheckPrefabs()

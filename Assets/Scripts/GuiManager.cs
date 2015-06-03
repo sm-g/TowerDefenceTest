@@ -56,8 +56,7 @@ namespace Assets.Scripts
 
             FindGuiElements();
 
-            var restartBtn = GameObject.Find("RestartBtn");
-            restartBtn.GetComponent<Button>().onClick.AddListener(OnRestartClick);
+            AddListeners();
 
             CreateBuildButtons();
 
@@ -84,7 +83,15 @@ namespace Assets.Scripts
             };
 
             SetVisibility(GameManager.Instance.State);
-            StartCoroutine(OneSecondTimer(() => timerText.text = GetTimeToWinString()));
+            StartCoroutine(RefreshTimer(() => timerText.text = GetTimeToWinString()));
+        }
+
+        private void AddListeners()
+        {
+            var restartBtn = GameObject.Find("RestartBtn");
+            restartBtn.GetComponent<Button>().onClick.AddListener(OnRestartClick);
+            lostPanel.GetComponent<Button>().onClick.AddListener(OnRestartClick);
+            winPanel.GetComponent<Button>().onClick.AddListener(OnRestartClick);
         }
 
         private void FindGuiElements()
@@ -108,15 +115,6 @@ namespace Assets.Scripts
         private string GetLivesString()
         {
             return new String(liveChar, GameManager.Instance.Lives);
-        }
-
-        private IEnumerator OneSecondTimer(Action act)
-        {
-            while (true)
-            {
-                yield return new WaitForSeconds(1);
-                act();
-            }
         }
 
         private void CreateBuildButtons()
@@ -169,6 +167,15 @@ namespace Assets.Scripts
 
                 default:
                     throw new NotImplementedException();
+            }
+        }
+
+        private IEnumerator RefreshTimer(Action act)
+        {
+            while (true)
+            {
+                yield return new WaitForSeconds(0.1f);
+                act();
             }
         }
     }
