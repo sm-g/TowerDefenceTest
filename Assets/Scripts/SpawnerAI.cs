@@ -18,7 +18,7 @@ namespace Assets.Scripts
         public GameObject[] mobPrefabs;
 
         private static GameObject mobsFolder;
-        private int waveNumber = 0;
+        private int waveNumber;
         private GameObject[] spawnPoints;
 
         private void Awake()
@@ -44,6 +44,7 @@ namespace Assets.Scripts
             GameManager.Instance.RoundStarted += (s, e) =>
             {
                 StopAllCoroutines();
+                waveNumber = 0;
 
                 StartWave();
 

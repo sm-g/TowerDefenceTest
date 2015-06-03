@@ -21,7 +21,7 @@ namespace Assets.Scripts
         private List<GameObject> _turrets = new List<GameObject>();
         private List<GameObject> _placements = new List<GameObject>();
 
-        private int _passedMobs;
+        private int _finishedMobs;
         private int secToWin = -1;
         private float goalTime;
         private LevelSettings levelScript;
@@ -89,17 +89,23 @@ namespace Assets.Scripts
         {
             get
             {
-                var res = levelScript.livesAtStart - PassedMobs;
+                var res = levelScript.livesAtStart - FinishedMobs;
                 return res > 0 ? res : 0;
             }
         }
 
-        public int PassedMobs
+        /// <summary>
+        /// Сколько мобов пересекли финиш.
+        /// </summary>
+        public int FinishedMobs
         {
-            get { return _passedMobs; }
+            get { return _finishedMobs; }
             private set
             {
-                _passedMobs = value;
+                _finishedMobs = value;
+
+                Debug.LogFormat("finished mobs = {0}, lives = {1}", _finishedMobs, Lives);
+
                 OnPropertyChanged("Lives");
             }
         }
@@ -114,6 +120,8 @@ namespace Assets.Scripts
         {
             DontDestroyOnLoad(Instance.gameObject);
             levelScript = GetComponent<LevelSettings>();
+
+            StartCoroutine(DoCleanUps());
         }
 
         /// <summary>
@@ -135,7 +143,11 @@ namespace Assets.Scripts
 
             _mobs.ForEach(x => GameObject.Destroy(x));
             _turrets.ForEach(x => GameObject.Destroy(x));
-            PassedMobs = 0;
+
+            // чтобы не было мобов за финишем
+            _mobs.Clear();
+
+            FinishedMobs = 0;
             goalTime = levelScript.totalTime + Time.timeSinceLevelLoad;
         }
 
@@ -143,21 +155,15 @@ namespace Assets.Scripts
         {
             var placement = go.GetComponent<Placement>();
             if (placement != null)
-            {
                 _placements.Add(go);
-            }
 
             var mob = go.GetComponent<MobHP>();
             if (mob != null)
-            {
                 _mobs.Add(go);
-            }
 
             var turret = go.GetComponent<TurretAI>();
             if (turret != null)
-            {
                 _turrets.Add(go);
-            }
         }
 
         public void Unregister(GameObject go)
@@ -172,9 +178,32 @@ namespace Assets.Scripts
         {
             while (State == GameState.Playing)
             {
-                GameManager.Instance.CheckPassedMobs();
+                GameManager.Instance.CheckFinishedMobs();
                 GameManager.Instance.CheckRound();
                 yield return new WaitForSeconds(0.1f);
+            }
+        }
+
+        /// <summary>
+        /// Разрушает объекты, которые больше не нужны.
+        /// </summary>
+        private IEnumerator DoCleanUps()
+        {
+            while (true)
+            {
+                if (State == GameState.Lost)
+                {
+                    // продолжается спаун мобов
+                    _mobs.Where(mob => mob.transform.position.x < levelScript.finishX)
+                        .ForEach(mob => GameObject.Destroy(mob));
+
+                }
+                else if (State == GameState.Won)
+                {
+                    // все мобы побеждены
+                    _mobs.ForEach(x => GameObject.Destroy(x));
+                }
+                yield return new WaitForSeconds(1f);
             }
         }
 
@@ -182,16 +211,14 @@ namespace Assets.Scripts
         /// Проверяет мобов за финишем. Живой моб отнимает одну жизнь.
         /// Если жизней не осталось, игра заканчивается поражением.
         /// </summary>
-        private void CheckPassedMobs()
+        private void CheckFinishedMobs()
         {
             Mobs.Where(mob => mob.transform.position.x < levelScript.finishX)
                 .ForEach(mob =>
                 {
                     var hp = mob.GetComponent<MobHP>();
                     if (hp.curHP > 0)
-                    {
-                        PassedMobs++;
-                    }
+                        FinishedMobs++;
 
                     GameObject.Destroy(mob);
                 });
@@ -207,8 +234,6 @@ namespace Assets.Scripts
         {
             if (SecondsToWin == 0)
             {
-                // all mobs beaten
-                _mobs.ForEach(x => GameObject.Destroy(x));
                 State = Scripts.GameState.Won;
             }
         }
