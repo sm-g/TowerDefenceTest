@@ -7,14 +7,13 @@ namespace Assets.Scripts
 {
     public class SpawnerAI : MonoBehaviour
     {
-        [Range(1, 10)]
-        public int mobsPerWave = 3;
-
         /// <summary>
         /// Задержка между волнами в секундах.
         /// </summary>
         [Range(10, 500)]
         public float waveCooldown = 10;
+
+        public IntCount mobsPerWave = new IntCount(3, 10);
 
         public GameObject[] mobPrefabs;
 
@@ -32,6 +31,9 @@ namespace Assets.Scripts
             spawnPoints = GameObject.FindGameObjectsWithTag(Tags.Respawn);
             if (spawnPoints.Length == 0)
                 Debug.LogWarning("No spawn points on scene.");
+
+            if (!mobsPerWave.IsValid())
+                Debug.LogWarning("Mobs Per Wave count invalid.");
 
             mobsFolder = mobsFolder ?? new GameObject(Generated.Mobs);
         }
@@ -97,7 +99,8 @@ namespace Assets.Scripts
         private void SpawnMobs(GameObject spawnPoint)
         {
             var spawnPos = spawnPoint.transform.position;
-            for (int i = 0; i < mobsPerWave; i++)
+            var count = UnityEngine.Random.Range(mobsPerWave.minimum, mobsPerWave.maximum + 1);
+            for (int i = 0; i < count; i++)
             {
                 var prefab = mobPrefabs[UnityEngine.Random.Range(0, mobPrefabs.Length)];
                 var pos = new Vector3(spawnPos.x + i * 2, spawnPos.y, spawnPos.z);
@@ -105,7 +108,7 @@ namespace Assets.Scripts
                 var mob = GameObject.Instantiate(prefab, pos, Quaternion.identity) as GameObject;
                 mobsFolder.AddChild(mob);
             }
-            Debug.LogFormat("spawned {0} mobs", mobsPerWave);
+            Debug.LogFormat("spawned {0} mobs", count);
         }
 
         private IEnumerator WaitNextWave()
