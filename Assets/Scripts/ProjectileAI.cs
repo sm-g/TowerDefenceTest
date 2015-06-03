@@ -5,8 +5,10 @@ namespace Assets.Scripts
 {
     public class ProjectileAI : MonoBehaviour
     {
+        [Range(1, 100)]
+        public float speed = 10;
+
         private float attackDistance = 0.1f;
-        private float speed = 10;
         private TurretAI turret;
         private Transform projectile;
 
@@ -59,7 +61,7 @@ namespace Assets.Scripts
 
         private void AttackTarget()
         {
-            MobHP mhp = Target.GetComponent<MobHP>();
+            var mhp = Target.GetComponent<MobHP>();
             if (mhp != null)
             {
                 mhp.TakeDamage(Damage);
