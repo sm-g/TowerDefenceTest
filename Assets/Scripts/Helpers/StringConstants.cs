@@ -9,6 +9,7 @@ namespace Assets.Scripts
     {
         public static string Finish = "Finish";
         public static string Respawn = "Respawn";
+        public static string MainCamera = "MainCamera";
     }
 
     public static class Generated
