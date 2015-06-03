@@ -88,7 +88,7 @@ MonoBehaviour:
   maxHP: 100
   curHP: 100
   minHpColor: {r: 1, g: 0, b: 0, a: 1}
-  maxHpColor: {r: 0, g: 0, b: 1, a: 1}
+  maxHpColor: {r: 0, g: .435294122, b: 1, a: 1}
 --- !u!1001 &100100000
 Prefab:
   m_ObjectHideFlags: 1
