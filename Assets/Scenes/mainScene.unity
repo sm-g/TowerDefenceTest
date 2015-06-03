@@ -1317,10 +1317,10 @@ GameObject:
   serializedVersion: 4
   m_Component:
   - 4: {fileID: 1579775075}
-  - 114: {fileID: 1579775074}
   - 114: {fileID: 1579775076}
   - 114: {fileID: 1579775077}
   - 114: {fileID: 1579775078}
+  - 114: {fileID: 1579775079}
   m_Layer: 0
   m_Name: Scripts
   m_TagString: Untagged
@@ -1328,26 +1328,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1579775074
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1579775073}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 14e1f2bad32bf104e86cb760b34ea237, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  mobPrefabs:
-  - {fileID: 147162, guid: 4966c6293393cf0409b8c2dcde7e3e9e, type: 2}
-  - {fileID: 147162, guid: 18f96c5a89de6504e942527caba3a5e1, type: 2}
-  - {fileID: 147162, guid: f501e73c1c78eb54bb9ca716443467f1, type: 2}
-  turretPrefabs:
-  - {fileID: 161434, guid: f15603c3c4a4e66448034eace200544c, type: 2}
-  - {fileID: 161434, guid: 18a2bf37a05860b4c9b2cef08312a0da, type: 2}
-  - {fileID: 161434, guid: cb8e05097fc00ec488604e5267b117cf, type: 2}
-  projectilePrefab: {fileID: 130302, guid: 5a8c381e1551c6a4cb6709ad88e2a9c2, type: 2}
 --- !u!4 &1579775075
 Transform:
   m_ObjectHideFlags: 0
@@ -1384,6 +1364,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   mobsPerWave: 3
   waveCooldown: 10
+  mobPrefabs:
+  - {fileID: 147162, guid: 4966c6293393cf0409b8c2dcde7e3e9e, type: 2}
+  - {fileID: 147162, guid: 18f96c5a89de6504e942527caba3a5e1, type: 2}
+  - {fileID: 147162, guid: f501e73c1c78eb54bb9ca716443467f1, type: 2}
 --- !u!114 &1579775078
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1397,6 +1381,22 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   totalTime: 30
   livesAtStart: 5
+--- !u!114 &1579775079
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1579775073}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 82e1384f16ce9b44f9292b8397f714ab, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  turretPrefabs:
+  - {fileID: 161434, guid: f15603c3c4a4e66448034eace200544c, type: 2}
+  - {fileID: 161434, guid: 18a2bf37a05860b4c9b2cef08312a0da, type: 2}
+  - {fileID: 161434, guid: cb8e05097fc00ec488604e5267b117cf, type: 2}
+  projectilePrefab: {fileID: 130302, guid: 5a8c381e1551c6a4cb6709ad88e2a9c2, type: 2}
 --- !u!1 &1615453021
 GameObject:
   m_ObjectHideFlags: 0

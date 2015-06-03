@@ -77,7 +77,7 @@ namespace Assets.Scripts
         private void Shoot(GameObject target)
         {
             var lookAtTarget = Quaternion.LookRotation(target.transform.position - turret.position);
-            var proj = Instantiate(Globals.Instance.projectilePrefab, turret.position, lookAtTarget) as GameObject;
+            var proj = Instantiate(Builder.Instance.projectilePrefab, turret.position, lookAtTarget) as GameObject;
             projectilesFolder.AddChild(proj);
 
             // прицеливаем снаряд

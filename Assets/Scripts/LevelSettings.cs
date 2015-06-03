@@ -17,7 +17,7 @@ namespace Assets.Scripts
 
         internal float finishX;
 
-        public void Awake()
+        private void Awake()
         {
             var finish = GameObject.FindGameObjectWithTag("Finish");
             if (finish == null)

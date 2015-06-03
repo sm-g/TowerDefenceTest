@@ -16,24 +16,24 @@ namespace Assets.Scripts
         [Range(10, 500)]
         public float waveCooldown = 10;
 
+        public GameObject[] mobPrefabs;
+
         private static GameObject mobsFolder;
         private int waveNumber = 0;
         private GameObject[] spawnPoints;
-        private GameObject[] mobPrefabs;
-
-        public void Initialize(GameObject[] mobPrefabs)
-        {
-            this.mobPrefabs = mobPrefabs;
-        }
 
         private void Awake()
         {
+            DontDestroyOnLoad(gameObject);
+
+            if (mobPrefabs.Length == 0)
+                Debug.LogError("Add mob prefabs to " + this.GetType());
+
             spawnPoints = GameObject.FindGameObjectsWithTag("Respawn");
             if (spawnPoints.Length == 0)
                 Debug.LogWarning("No spawn points on scene.");
 
             mobsFolder = mobsFolder ?? new GameObject("Mobs");
-            DontDestroyOnLoad(gameObject);
         }
 
         private void Start()

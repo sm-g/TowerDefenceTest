@@ -11,7 +11,6 @@ namespace Assets.Scripts
         public Button BuildTurretBtnPrefab;
 
         private static char liveChar = '+';
-        private Placement _selectedPlace;
         private GameObject buildPanel;
         private GameObject lostPanel;
         private GameObject winPanel;
@@ -20,21 +19,6 @@ namespace Assets.Scripts
         private Text timerText;
         private GameObject statPanel;
 
-        public Placement SelectedPlace
-        {
-            get { return _selectedPlace; }
-            set
-            {
-                if (buildPanel != null)
-                {
-                    // показываем панель строительства для выбранного места
-                    buildPanel.SetActive(value != null);
-                }
-
-                _selectedPlace = value;
-            }
-        }
-
         public void OnRestartClick()
         {
             GameManager.Instance.Restart();
@@ -42,17 +26,13 @@ namespace Assets.Scripts
 
         public void OnBuildClick(GameObject turret)
         {
-            if (SelectedPlace != null)
-            {
-                SelectedPlace.SetTurret(turret);
-                SelectedPlace.IsSelected = false;
-            }
+            Builder.Instance.Build(turret);
         }
 
         private void Awake()
         {
             if (BuildTurretBtnPrefab == null)
-                Debug.LogError("Add BuildTurretBtnPrefab to " + typeof(GuiManager));
+                Debug.LogError("Add BuildTurretBtnPrefab to " + this.GetType());
 
             FindGuiElements();
 
@@ -60,12 +40,15 @@ namespace Assets.Scripts
 
             CreateBuildButtons();
 
-            Placement.SelectedChanged += (s, e) =>
+            Builder.Instance.PropertyChanged += (s, e) =>
             {
-                if (e.arg.IsSelected)
-                    SelectedPlace = e.arg;
-                else if (SelectedPlace != null && !SelectedPlace.IsSelected) // сняли выделение
-                    SelectedPlace = null;
+                switch (e.PropertyName)
+                {
+                    case "SelectedPlace":
+                        // показываем панель строительства для выбранного места
+                        buildPanel.SetActive(Builder.Instance.SelectedPlace != null);
+                        break;
+                }
             };
 
             GameManager.Instance.PropertyChanged += (s, e) =>
@@ -119,7 +102,7 @@ namespace Assets.Scripts
 
         private void CreateBuildButtons()
         {
-            foreach (GameObject turret in Globals.Instance.turretPrefabs)
+            foreach (GameObject turret in Builder.Instance.turretPrefabs)
             {
                 var tCopy = turret;
 
