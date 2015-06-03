@@ -72,11 +72,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a522980838479db4a8421f1c5efc9f30, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  attackMaxDistance: 6
-  attackMinDistance: .100000001
+  attackDistance:
+    minimum: .100000001
+    maximum: 6
   attackDamage: 20
   shotsAtOnce: 1
   reloadTimer: 4
+  noTargetColor: {r: .5, g: .5, b: .5, a: 1}
+  attackingColor: {r: 1, g: 0, b: 1, a: 1}
 --- !u!1001 &100100000
 Prefab:
   m_ObjectHideFlags: 1

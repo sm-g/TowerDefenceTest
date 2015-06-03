@@ -1,15 +1,12 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace Assets.Scripts
 {
     public class TurretAI : MonoBehaviour
     {
-        [Range(0, 50)]
-        public float attackMaxDistance = 50.0f;
-
-        [Range(0, 5)]
-        public float attackMinDistance = 0.1f;
+        public FloatCount attackDistance = new FloatCount(0.1f, 50.0f);
 
         [Range(1, 100)]
         public int attackDamage = 10;
@@ -20,21 +17,37 @@ namespace Assets.Scripts
         [Range(0.1f, 50f)]
         public float reloadTimer = 2.5f;
 
+        public Color noTargetColor = Color.grey;
+        public Color attackingColor = Color.magenta;
+
+        private static GameObject projectilesFolder;
         private float reloadCooldown;
         private int xp;
-        private GameObject curTarget;
+        private GameObject _target;
+        private Material material;
         private Transform turret;
-        private static GameObject projectilesFolder;
+
+        public GameObject Target
+        {
+            get { return _target; }
+            private set
+            {
+                _target = value;
+                material.color = value == null ? noTargetColor : attackingColor;
+            }
+        }
 
         private void Awake()
         {
             GameManager.Instance.Register(gameObject);
 
-            if (attackMaxDistance < attackMinDistance)
+            if (!attackDistance.IsValid())
                 Debug.LogWarning("Attack max distance less than min distance.");
 
             projectilesFolder = projectilesFolder ?? new GameObject(Generated.Projectiles);
             reloadCooldown = reloadTimer;
+            material = gameObject.GetComponent<Renderer>().material;
+
         }
 
         private void Start()
@@ -46,8 +59,8 @@ namespace Assets.Scripts
         {
             reloadTimer -= Time.deltaTime;
 
-            if (curTarget != null && curTarget.activeInHierarchy &&
-                curTarget.InRadialArea(turret, attackMinDistance, attackMaxDistance))
+            if (Target != null && Target.activeInHierarchy &&
+                Target.InRadialArea(turret, attackDistance.minimum, attackDistance.maximum))
             {
                 // есть цель в допустимых пределах
 
@@ -58,13 +71,13 @@ namespace Assets.Scripts
 
                     // выпускаем снаряды
                     for (int i = 0; i < shotsAtOnce; i++)
-                        Shoot(curTarget);
+                        Shoot(Target);
                 }
             }
             else
             {
                 // выбираем новую цель
-                curTarget = GetNearestTarget();
+                Target = GetNearestTarget();
             }
         }
 
@@ -95,14 +108,14 @@ namespace Assets.Scripts
 
             foreach (var target in GameManager.Instance.Mobs)
             {
-                if (target.InRadialArea(turret, attackMinDistance, closestMobDistance))
+                if (target.InRadialArea(turret, attackDistance.minimum, closestMobDistance))
                 {
                     closestMobDistance = Vector3.Distance(target.transform.position, turret.position);
                     nearestmob = target;
                 }
             }
 
-            return closestMobDistance > attackMaxDistance ? null : nearestmob;
+            return closestMobDistance > attackDistance.maximum ? null : nearestmob;
         }
 
         public void AddXp(int points)
@@ -117,7 +130,7 @@ namespace Assets.Scripts
                         attackDamage,
                         shotsAtOnce,
                         reloadTimer,
-                        attackMaxDistance);
+                        attackDistance.maximum);
         }
     }
 }
