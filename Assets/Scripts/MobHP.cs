@@ -17,6 +17,8 @@ namespace Assets.Scripts
 
         private void Awake()
         {
+            //Debug.Log("Awake " + this);
+
             GameManager.Instance.Register(gameObject);
             curHP = Mathf.Min(curHP, maxHP); // curHP <= maxHP
             material = gameObject.GetComponent<Renderer>().material;

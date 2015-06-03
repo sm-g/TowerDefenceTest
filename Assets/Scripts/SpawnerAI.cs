@@ -51,7 +51,7 @@ namespace Assets.Scripts
                 {
                     if (CanStartOutOfTurnWave())
                     {
-                        Debug.Log("Out Of Turn Wave" + waveNumber);
+                        Debug.Log("Out Of Turn Wave");
                         StartWave();
                     }
                 }));
@@ -68,8 +68,6 @@ namespace Assets.Scripts
         /// </summary>
         private static bool CanStartOutOfTurnWave()
         {
-            Debug.Log("CanStartOutOfTurnWave mobs" + GameManager.Instance.Mobs.Count());
-
             // lost - продолжаем спаунить мобов
             return GameManager.Instance.Mobs.Count() == 0 &&
                 (GameManager.Instance.State == GameState.Playing ||
@@ -89,6 +87,8 @@ namespace Assets.Scripts
             {
                 SpawnMobs(spawnPoint);
             }
+
+            Debug.Log("total mobs = " + GameManager.Instance.Mobs.Count());
 
             waveNumber++;
 
@@ -111,8 +111,6 @@ namespace Assets.Scripts
                 mobsFolder.AddChild(mob);
             }
             Debug.LogFormat("spawned {0} mobs", count);
-            Debug.Log("total = " + GameManager.Instance.Mobs.Count());
-
         }
 
         private IEnumerator WaitNextWave()

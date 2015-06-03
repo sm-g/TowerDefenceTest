@@ -32,8 +32,11 @@ namespace Assets.Scripts
             get { return _target; }
             private set
             {
+                if (_target == value) return;
+
+                Debug.LogFormat("{0} targets {1}", this, value);
                 _target = value;
-                material.color = value == null ? noTargetColor : attackingColor;
+                material.color = Target == null ? noTargetColor : attackingColor;
             }
         }
 
@@ -47,6 +50,7 @@ namespace Assets.Scripts
             projectilesFolder = projectilesFolder ?? new GameObject(Generated.Projectiles);
             reloadCooldown = reloadTimer;
             material = gameObject.GetComponent<Renderer>().material;
+            material.color = noTargetColor;
         }
 
         private void Start()
@@ -131,7 +135,7 @@ namespace Assets.Scripts
             return "{0}*{1}/{2} hp/s, {3} m".FormatStr(
                         attackDamage,
                         shotsAtOnce,
-                        reloadTimer,
+                        reloadCooldown,
                         attackDistance.maximum);
         }
     }

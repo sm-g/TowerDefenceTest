@@ -61,6 +61,8 @@ namespace Assets.Scripts
 
         private void AttackTarget()
         {
+            Debug.LogFormat("{0} attack {1}", this, Target);
+
             var mhp = Target.GetComponent<MobHP>();
             if (mhp != null)
             {
