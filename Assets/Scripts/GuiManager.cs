@@ -71,7 +71,7 @@ namespace Assets.Scripts
 
         private void AddListeners()
         {
-            var restartBtn = GameObject.Find("RestartBtn");
+            var restartBtn = GameObject.Find(Gui.RestartButton);
             restartBtn.GetComponent<Button>().onClick.AddListener(OnRestartClick);
             lostPanel.GetComponent<Button>().onClick.AddListener(OnRestartClick);
             winPanel.GetComponent<Button>().onClick.AddListener(OnRestartClick);
@@ -79,13 +79,13 @@ namespace Assets.Scripts
 
         private void FindGuiElements()
         {
-            buildPanel = GameObject.Find("BuildPanel");
-            statPanel = GameObject.Find("StatPanel");
-            shadowPanel = GameObject.Find("ShadowPanel");
-            winPanel = GameObject.Find("WinText");
-            lostPanel = GameObject.Find("LostText");
-            timerText = GameObject.Find("TimerText").GetComponent<Text>();
-            livesText = GameObject.Find("LivesText").GetComponent<Text>();
+            buildPanel = GameObject.Find(Gui.BuildPanel);
+            statPanel = GameObject.Find(Gui.StatPanel);
+            shadowPanel = GameObject.Find(Gui.ShadowPanel);
+            winPanel = GameObject.Find(Gui.WinText);
+            lostPanel = GameObject.Find(Gui.LostText);
+            timerText = GameObject.Find(Gui.TimerText).GetComponent<Text>();
+            livesText = GameObject.Find(Gui.LivesText).GetComponent<Text>();
         }
 
         private string GetTimeToWinString()

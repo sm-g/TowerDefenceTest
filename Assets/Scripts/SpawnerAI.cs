@@ -29,11 +29,11 @@ namespace Assets.Scripts
             if (mobPrefabs.Length == 0)
                 Debug.LogError("Add mob prefabs to " + this.GetType());
 
-            spawnPoints = GameObject.FindGameObjectsWithTag("Respawn");
+            spawnPoints = GameObject.FindGameObjectsWithTag(Tags.Respawn);
             if (spawnPoints.Length == 0)
                 Debug.LogWarning("No spawn points on scene.");
 
-            mobsFolder = mobsFolder ?? new GameObject("Mobs");
+            mobsFolder = mobsFolder ?? new GameObject(Generated.Mobs);
         }
 
         private void Start()
@@ -66,7 +66,7 @@ namespace Assets.Scripts
         /// </summary>
         private static bool CanStartOutOfTurnWave()
         {
-            // on lost, mobs continue to arrive
+            // lost - продолжаем спаунить мобов
             return GameManager.Instance.Mobs.Count() == 0 &&
                 (GameManager.Instance.State == GameState.Playing ||
                  GameManager.Instance.State == GameState.Lost);

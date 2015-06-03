@@ -24,7 +24,7 @@ namespace Assets.Scripts
         private int xp;
         private GameObject curTarget;
         private Transform turret;
-        private GameObject projectilesFolder;
+        private static GameObject projectilesFolder;
 
         private void Awake()
         {
@@ -33,10 +33,7 @@ namespace Assets.Scripts
             if (attackMaxDistance < attackMinDistance)
                 Debug.LogWarning("Attack max distance less than min distance.");
 
-            projectilesFolder = GameObject.Find("Projectiles");
-            if (projectilesFolder == null)
-                projectilesFolder = new GameObject("Projectiles");
-
+            projectilesFolder = projectilesFolder ?? new GameObject(Generated.Projectiles);
             reloadCooldown = reloadTimer;
         }
 

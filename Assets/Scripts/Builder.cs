@@ -53,14 +53,14 @@ namespace Assets.Scripts
             if (projectilePrefab == null)
                 Debug.LogError("Add projectile prefab to " + this.GetType());
             if (projectilePrefab != null && projectilePrefab.GetComponent<ProjectileAI>() == null)
-                Debug.LogErrorFormat("Add {0} to projectile prefab", typeof(ProjectileAI));
+                Debug.LogErrorFormat("Add '{0}' to projectile prefab", typeof(ProjectileAI));
 
             if (turretPrefabs.Length == 0)
                 Debug.LogError("Add turret prefabs to " + this.GetType());
             foreach (var prefab in turretPrefabs)
             {
                 if (prefab.GetComponent<TurretAI>() == null)
-                    Debug.LogError("No " + typeof(TurretAI) + " in prefab.");
+                    Debug.LogErrorFormat("No '{0}' in prefab.", typeof(TurretAI));
             }
         }
 

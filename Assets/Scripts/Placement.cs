@@ -16,10 +16,10 @@ namespace Assets.Scripts
         /// </summary>
         public Color selectedColor = Color.yellow;
 
+        private static GameObject turretsFolder;
         private bool _isSelected;
-        private GameObject turretsFolder;
 
-        public static event EventHandler<EventArgs<Placement>> SelectedChanged;
+        public static event EventHandler<EventArgs<Placement>> SelectedChanged = delegate { };
 
         /// <summary>
         /// Башня на этом месте.
@@ -37,7 +37,7 @@ namespace Assets.Scripts
                 _isSelected = value;
                 gameObject.GetComponent<Renderer>().material.color = _isSelected ? selectedColor : color;
 
-                OnSelectedChanged();
+                SelectedChanged(this, new EventArgs<Placement>(this));
             }
         }
 
@@ -57,23 +57,11 @@ namespace Assets.Scripts
             }
         }
 
-        protected virtual void OnSelectedChanged()
-        {
-            var h = SelectedChanged;
-            if (h != null)
-            {
-                h(this, new EventArgs<Placement>(this));
-            }
-        }
-
         private void Awake()
         {
             GameManager.Instance.Register(gameObject);
 
-            IsSelected = false;
-            turretsFolder = GameObject.Find("Turrets");
-            if (turretsFolder == null)
-                turretsFolder = new GameObject("Turrets");
+            turretsFolder = turretsFolder ?? new GameObject(Generated.Turrets);
 
             SelectedChanged += (s, e) =>
             {
@@ -81,6 +69,8 @@ namespace Assets.Scripts
                 if (e.arg != this && e.arg.IsSelected)
                     IsSelected = false;
             };
+
+            IsSelected = false; // set color
         }
 
         private void OnMouseDown()

@@ -387,77 +387,7 @@ Transform:
   - {fileID: 1534432273}
   - {fileID: 39459966}
   m_Father: {fileID: 0}
-  m_RootOrder: 6
---- !u!1001 &239065415
-Prefab:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    m_TransformParent: {fileID: 0}
-    m_Modifications:
-    - target: {fileID: 498792, guid: f15603c3c4a4e66448034eace200544c, type: 2}
-      propertyPath: m_LocalPosition.x
-      value: 10
-      objectReference: {fileID: 0}
-    - target: {fileID: 498792, guid: f15603c3c4a4e66448034eace200544c, type: 2}
-      propertyPath: m_LocalPosition.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 498792, guid: f15603c3c4a4e66448034eace200544c, type: 2}
-      propertyPath: m_LocalPosition.z
-      value: 15
-      objectReference: {fileID: 0}
-    - target: {fileID: 498792, guid: f15603c3c4a4e66448034eace200544c, type: 2}
-      propertyPath: m_LocalRotation.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 498792, guid: f15603c3c4a4e66448034eace200544c, type: 2}
-      propertyPath: m_LocalRotation.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 498792, guid: f15603c3c4a4e66448034eace200544c, type: 2}
-      propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 498792, guid: f15603c3c4a4e66448034eace200544c, type: 2}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 498792, guid: f15603c3c4a4e66448034eace200544c, type: 2}
-      propertyPath: m_RootOrder
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 11414652, guid: f15603c3c4a4e66448034eace200544c, type: 2}
-      propertyPath: attackMaxDistance
-      value: 45
-      objectReference: {fileID: 0}
-    - target: {fileID: 11414652, guid: f15603c3c4a4e66448034eace200544c, type: 2}
-      propertyPath: attackMinDistance
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 11414652, guid: f15603c3c4a4e66448034eace200544c, type: 2}
-      propertyPath: reloadTimer
-      value: .5
-      objectReference: {fileID: 0}
-    - target: {fileID: 11414652, guid: f15603c3c4a4e66448034eace200544c, type: 2}
-      propertyPath: shotsAtOnce
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 161434, guid: f15603c3c4a4e66448034eace200544c, type: 2}
-      propertyPath: m_Name
-      value: Turret2
-      objectReference: {fileID: 0}
-    - target: {fileID: 11414652, guid: f15603c3c4a4e66448034eace200544c, type: 2}
-      propertyPath: attackDamage
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 161434, guid: f15603c3c4a4e66448034eace200544c, type: 2}
-      propertyPath: m_IsActive
-      value: 1
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-  m_ParentPrefab: {fileID: 100100000, guid: f15603c3c4a4e66448034eace200544c, type: 2}
-  m_IsPrefabParent: 0
+  m_RootOrder: 5
 --- !u!1 &284507426
 GameObject:
   m_ObjectHideFlags: 0
@@ -486,7 +416,7 @@ Transform:
   - {fileID: 801392917}
   - {fileID: 716366658}
   m_Father: {fileID: 0}
-  m_RootOrder: 3
+  m_RootOrder: 2
 --- !u!4 &716366658 stripped
 Transform:
   m_PrefabParentObject: {fileID: 403008, guid: 579c56fce38cd224d9e4f1417fd5b977, type: 2}
@@ -985,7 +915,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 8
+  m_RootOrder: 7
 --- !u!1 &1230839998
 GameObject:
   m_ObjectHideFlags: 0
@@ -1339,7 +1269,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 4
+  m_RootOrder: 3
 --- !u!114 &1579775076
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1539,7 +1469,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 5
+  m_RootOrder: 4
 --- !u!1 &1776457282
 GameObject:
   m_ObjectHideFlags: 0
@@ -1630,7 +1560,7 @@ RectTransform:
   - {fileID: 1615453022}
   - {fileID: 858914398}
   m_Father: {fileID: 0}
-  m_RootOrder: 7
+  m_RootOrder: 6
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
@@ -1706,7 +1636,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 161434, guid: f15603c3c4a4e66448034eace200544c, type: 2}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: f15603c3c4a4e66448034eace200544c, type: 2}
@@ -1948,4 +1878,4 @@ Transform:
   - {fileID: 32878631}
   - {fileID: 1108259209}
   m_Father: {fileID: 0}
-  m_RootOrder: 2
+  m_RootOrder: 1

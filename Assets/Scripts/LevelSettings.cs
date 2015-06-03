@@ -19,9 +19,9 @@ namespace Assets.Scripts
 
         private void Awake()
         {
-            var finish = GameObject.FindGameObjectWithTag("Finish");
+            var finish = GameObject.FindGameObjectWithTag(Tags.Finish);
             if (finish == null)
-                Debug.LogError("Add tag 'Finish' to finish line.");
+                Debug.LogErrorFormat("Add tag '{0}' to finish line.", Tags.Finish);
             else
                 finishX = finish.transform.position.x;
         }
