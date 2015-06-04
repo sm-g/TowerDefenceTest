@@ -40,27 +40,38 @@ namespace Assets.Scripts
 
         private void Start()
         {
-            // новая волна - в начале раунда, когда убиты все мобы или пришло время
-            GameManager.Instance.RoundStarted += (s, e) =>
+            GameManager.Instance.StateChanged += (s, e) =>
             {
-                StopAllCoroutines();
-                waveNumber = 0;
-
-                StartWave();
-
-                StartCoroutine(OneSecondTimer(() =>
+                switch (e.arg)
                 {
-                    if (CanStartOutOfTurnWave())
-                    {
-                        Debug.Log("Out Of Turn Wave");
+                    case GameState.Start:
+                        break;
+
+                    case GameState.Playing:
+                        // новая волна - в начале раунда, когда убиты все мобы или пришло время
+                        StopAllCoroutines();
+                        waveNumber = 0;
+
                         StartWave();
-                    }
-                }));
-            };
-            GameManager.Instance.Won += (s, e) =>
-            {
-                // stop spawn
-                StopAllCoroutines();
+
+                        StartCoroutine(OneSecondTimer(() =>
+                        {
+                            if (CanStartOutOfTurnWave())
+                            {
+                                Debug.Log("Out Of Turn Wave");
+                                StartWave();
+                            }
+                        }));
+                        break;
+
+                    case GameState.Won:
+                        // stop spawn
+                        StopAllCoroutines();
+                        break;
+
+                    case GameState.Lost:
+                        break;
+                }
             };
         }
 

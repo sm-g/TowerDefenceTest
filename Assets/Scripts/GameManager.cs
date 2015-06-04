@@ -27,11 +27,7 @@ namespace Assets.Scripts
         private LevelSettings levelScript;
         private GameState _state = GameState.Start;
 
-        public event EventHandler Won = delegate { };
-
-        public event EventHandler Lost = delegate { };
-
-        public event EventHandler RoundStarted = delegate { };
+        public event EventHandler<EventArgs<GameState>> StateChanged = delegate { };
 
         public event PropertyChangedEventHandler PropertyChanged = delegate { };
 
@@ -43,27 +39,10 @@ namespace Assets.Scripts
                 if (_state == value) return;
 
                 _state = value;
-                OnPropertyChanged("State");
                 Debug.Log("Game state = " + value);
 
-                switch (value)
-                {
-                    case GameState.Start:
-
-                        break;
-
-                    case GameState.Playing:
-                        RoundStarted(this, EventArgs.Empty);
-                        break;
-
-                    case GameState.Won:
-                        Won(this, EventArgs.Empty);
-                        break;
-
-                    case GameState.Lost:
-                        Lost(this, EventArgs.Empty);
-                        break;
-                }
+                OnPropertyChanged("State");
+                StateChanged(this, new EventArgs<GameState>(_state));
             }
         }
 

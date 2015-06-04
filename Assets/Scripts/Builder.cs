@@ -20,6 +20,9 @@ namespace Assets.Scripts
             get { return _selectedPlace; }
             private set
             {
+                if (_selectedPlace != null && value == null && _selectedPlace.IsSelected)
+                    _selectedPlace.IsSelected = false;
+
                 _selectedPlace = value;
                 OnPropertyChanged("SelectedPlace");
             }
@@ -47,6 +50,13 @@ namespace Assets.Scripts
                     SelectedPlace = e.arg;
                 else if (SelectedPlace != null && !SelectedPlace.IsSelected) // сняли выделение
                     SelectedPlace = null;
+            };
+            GameManager.Instance.StateChanged += (s, e) =>
+            {
+                if (e.arg == GameState.Won || e.arg == GameState.Lost)
+                {
+                    SelectedPlace = null;
+                }
             };
         }
 
