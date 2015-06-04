@@ -32,9 +32,9 @@ namespace Assets.Scripts
             get { return _target; }
             private set
             {
-                if (_target == value) return;
+                if (ReferenceEquals(_target, value)) return;
 
-                Debug.LogFormat("{0} targets {1}", this, value);
+                Debug.LogFormat("{0} targets '{1}'", this, value);
                 _target = value;
                 material.color = Target == null ? noTargetColor : attackingColor;
             }
@@ -116,12 +116,19 @@ namespace Assets.Scripts
             {
                 if (target.InRadialArea(turret, attackDistance.minimum, closestMobDistance))
                 {
-                    closestMobDistance = Vector3.Distance(target.transform.position, turret.position);
-                    nearestmob = target;
+                    var d = Vector3.Distance(target.transform.position, turret.position);
+                    if (d < closestMobDistance)
+                    {
+                        closestMobDistance = d;
+                        nearestmob = target;
+                    }
                 }
             }
 
-            return closestMobDistance > attackDistance.maximum ? null : nearestmob;
+            var res = closestMobDistance > attackDistance.maximum ? null : nearestmob;
+            //if (res != null)
+            //    Debug.LogFormat("nearest to {0} in {1} m", this, Mathf.FloorToInt(closestMobDistance));
+            return res;
         }
 
         public void AddXp(int points)
