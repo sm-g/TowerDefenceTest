@@ -21,7 +21,7 @@ namespace Assets.Scripts
 
         private static GameObject projectilesFolder;
         private static float maxAttackDistance = 15;
-        private float reloadCooldown;
+        private float? _reloadCooldown;
         private int xp;
         private GameObject _target;
         private Material material;
@@ -39,6 +39,16 @@ namespace Assets.Scripts
                 material.color = Target == null ? noTargetColor : attackingColor;
             }
         }
+        private float ReloadCooldown
+        {
+            get
+            {
+                // first get may be from ToString before Awake
+                if (_reloadCooldown == null)
+                    _reloadCooldown = reloadTimer;
+                return _reloadCooldown.Value;
+            }
+        }
 
         private void Awake()
         {
@@ -48,9 +58,11 @@ namespace Assets.Scripts
                 Debug.LogWarning("Attack max distance less than min distance.");
 
             projectilesFolder = projectilesFolder ?? new GameObject(Generated.Projectiles);
-            reloadCooldown = reloadTimer;
             material = gameObject.GetComponent<Renderer>().material;
             material.color = noTargetColor;
+
+            if (_reloadCooldown == null)
+                _reloadCooldown = reloadTimer;
         }
 
         private void Start()
@@ -73,7 +85,7 @@ namespace Assets.Scripts
                 if (reloadTimer <= 0)
                 {
                     // и пора стрелять
-                    reloadTimer = reloadCooldown;
+                    reloadTimer = ReloadCooldown;
 
                     // выпускаем снаряды
                     for (int i = 0; i < shotsAtOnce; i++)
@@ -142,7 +154,7 @@ namespace Assets.Scripts
             return "{0}*{1}/{2} hp/s, {3} m".FormatStr(
                         attackDamage,
                         shotsAtOnce,
-                        reloadCooldown,
+                        ReloadCooldown,
                         attackDistance.maximum);
         }
     }
