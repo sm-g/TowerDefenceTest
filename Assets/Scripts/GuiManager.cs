@@ -104,8 +104,8 @@ namespace Assets.Scripts
             allPanels = new[] { buildPanel, statPanel, shadowPanel, winPanel, lostPanel, startPanel };
             visiblePanels[GameState.Start] = new[] { shadowPanel, startPanel };
             visiblePanels[GameState.Playing] = new[] { statPanel };
-            visiblePanels[GameState.Won] = new[] { shadowPanel, winPanel };
-            visiblePanels[GameState.Lost] = new[] { shadowPanel, lostPanel };
+            visiblePanels[GameState.Won] = new[] { shadowPanel, statPanel, winPanel };
+            visiblePanels[GameState.Lost] = new[] { shadowPanel, statPanel, lostPanel };
         }
 
         private string GetTimeToWinString()
