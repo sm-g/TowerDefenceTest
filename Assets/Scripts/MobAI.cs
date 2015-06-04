@@ -2,10 +2,6 @@
 
 namespace Assets.Scripts
 {
-
-    /// <summary>
-    /// Поведение моба.
-    /// </summary>
     public class MobAI : MonoBehaviour
     {
         [Range(0, 5)]

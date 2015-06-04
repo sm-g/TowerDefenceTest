@@ -5,6 +5,9 @@ using UnityEngine;
 
 namespace Assets.Scripts
 {
+    /// <summary>
+    /// Строитель башен.
+    /// </summary>
     public class Builder : SingletonMB<Builder>, INotifyPropertyChanged
     {
         public GameObject[] turretPrefabs;
@@ -28,6 +31,10 @@ namespace Assets.Scripts
             }
         }
 
+        /// <summary>
+        /// Строит башню на выбранном месте.
+        /// </summary>
+        /// <param name="turret">Префаб башни.</param>
         public void Build(GameObject turret)
         {
             if (SelectedPlace != null)

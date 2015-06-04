@@ -6,14 +6,14 @@ using UnityEngine.EventSystems;
 namespace Assets.Scripts
 {
     /// <summary>
-    /// Место для строительства башни.
+    /// Слот для строительства башни.
     /// </summary>
     public class Placement : MonoBehaviour
     {
         public Color color = Color.gray;
 
         /// <summary>
-        /// Цвет места, которое выбрано для строительства.
+        /// Цвет выбранного слота.
         /// </summary>
         public Color selectedColor = Color.yellow;
 
@@ -29,7 +29,7 @@ namespace Assets.Scripts
         public GameObject Turret { get; private set; }
 
         /// <summary>
-        /// Место выбрано. Одновременно выбрано только одно место на сцене.
+        /// Слот выбран. Одновременно выбран только один слот на сцене.
         /// </summary>
         public bool IsSelected
         {
