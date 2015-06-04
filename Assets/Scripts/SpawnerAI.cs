@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Linq;
 using UnityEngine;
 
@@ -93,13 +92,10 @@ namespace Assets.Scripts
         {
             StopCoroutine(WaitNextWave());
 
-            Debug.LogFormat("=== wave {0}", waveNumber);
+            var spawnPointInd = Random.Range(0, spawnPoints.Length);
+            Debug.LogFormat("=== wave {0} from {1} spawn point", waveNumber, spawnPointInd);
 
-            foreach (var spawnPoint in spawnPoints)
-            {
-                SpawnMobs(spawnPoint);
-            }
-
+            SpawnMobs(spawnPoints[spawnPointInd]);
             Debug.Log("total mobs = " + GameManager.Instance.Mobs.Count());
 
             waveNumber++;
@@ -113,10 +109,10 @@ namespace Assets.Scripts
         private void SpawnMobs(GameObject spawnPoint)
         {
             var spawnPos = spawnPoint.transform.position;
-            var count = UnityEngine.Random.Range(mobsPerWave.minimum, mobsPerWave.maximum + 1);
+            var count = Random.Range(mobsPerWave.minimum, mobsPerWave.maximum + 1);
             for (int i = 0; i < count; i++)
             {
-                var prefab = mobPrefabs[UnityEngine.Random.Range(0, mobPrefabs.Length)];
+                var prefab = mobPrefabs[Random.Range(0, mobPrefabs.Length)];
                 var pos = new Vector3(spawnPos.x + i * 2, spawnPos.y, spawnPos.z);
 
                 var mob = GameObject.Instantiate(prefab, pos, Quaternion.identity) as GameObject;
@@ -131,7 +127,7 @@ namespace Assets.Scripts
             StartWave();
         }
 
-        private IEnumerator OneSecondTimer(Action act)
+        private IEnumerator OneSecondTimer(System.Action act)
         {
             while (true)
             {
