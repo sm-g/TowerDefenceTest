@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 namespace Assets.Scripts
 {
@@ -17,6 +18,7 @@ namespace Assets.Scripts
         public Color selectedColor = Color.yellow;
 
         private static GameObject turretsFolder;
+        private Material material;
         private bool _isSelected;
 
         public static event EventHandler<EventArgs<Placement>> SelectedChanged = delegate { };
@@ -35,7 +37,7 @@ namespace Assets.Scripts
             set
             {
                 _isSelected = value;
-                gameObject.GetComponent<Renderer>().material.color = _isSelected ? selectedColor : color;
+                material.color = _isSelected ? selectedColor : color;
 
                 SelectedChanged(this, new EventArgs<Placement>(this));
             }
@@ -61,8 +63,6 @@ namespace Assets.Scripts
         {
             GameManager.Instance.Register(gameObject);
 
-            turretsFolder = turretsFolder ?? new GameObject(Generated.Turrets);
-
             SelectedChanged += (s, e) =>
             {
                 // only one selected
@@ -70,12 +70,14 @@ namespace Assets.Scripts
                     IsSelected = false;
             };
 
-            IsSelected = false; // set color
+            turretsFolder = turretsFolder ?? new GameObject(Generated.Turrets);
+            material = gameObject.GetComponent<Renderer>().material;
+            material.color = color;
         }
 
         private void OnMouseDown()
         {
-            if (GameManager.Instance.State == GameState.Playing)
+            if (!EventSystem.current.IsPointerOverGameObject()) // do not select if click on ui element
                 IsSelected = !IsSelected;
         }
 
