@@ -22,6 +22,7 @@ namespace Assets.Scripts
     public static class Gui
     {
         public static string BuildPanel = "BuildPanel";
+        public static string CurrentTurretText = "CurrentTurretText";
         public static string StatPanel = "StatPanel";
         public static string ShadowPanel = "ShadowPanel";
         public static string WinText = "WinText";

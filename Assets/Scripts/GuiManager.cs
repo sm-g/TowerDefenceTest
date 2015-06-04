@@ -18,6 +18,7 @@ namespace Assets.Scripts
         private GameObject shadowPanel;
         private Text livesText;
         private Text timerText;
+        private Text currentTurretText;
         private GameObject statPanel;
         private GameObject startPanel;
         private Dictionary<GameState, GameObject[]> visiblePanels = new Dictionary<GameState, GameObject[]>();
@@ -50,7 +51,13 @@ namespace Assets.Scripts
                 {
                     case "SelectedPlace":
                         // показываем панель строительства для выбранного места
-                        buildPanel.SetActive(Builder.Instance.SelectedPlace != null);
+                        var place = Builder.Instance.SelectedPlace;
+                        buildPanel.SetActive(place != null);
+                        if (place != null)
+                            currentTurretText.text = "Current: " +
+                                (place.Turret == null
+                                    ? "empty"
+                                    : place.Turret.GetComponent<TurretAI>().ToString());
                         break;
                 }
             };
@@ -92,6 +99,7 @@ namespace Assets.Scripts
             startPanel = GameObject.Find(Gui.StartText);
             timerText = GameObject.Find(Gui.TimerText).GetComponent<Text>();
             livesText = GameObject.Find(Gui.LivesText).GetComponent<Text>();
+            currentTurretText = GameObject.Find(Gui.CurrentTurretText).GetComponent<Text>();
 
             allPanels = new[] { buildPanel, statPanel, shadowPanel, winPanel, lostPanel, startPanel };
             visiblePanels[GameState.Start] = new[] { shadowPanel, startPanel };
